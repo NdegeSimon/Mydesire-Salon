@@ -1,0 +1,451 @@
+
+        .carousel-container {
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-slide {
+         position: absolute;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background-size: cover;
+         background-position: center;
+         opacity: 0;
+         transition: opacity 1s ease-in-out;
+         background-blend-mode: multiply;
+         background-color: rgba(0, 0, 0, 0.7); /* 0.7 = 70% darker */
+        }
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        
+        /* Floating Hanging Sidebar */
+        .sidebar {
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            width: 100px;
+            background-color: #ff0000;
+            padding: 20px 10px;
+            align-items: center;
+            gap: 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        
+        /* Make it slightly smaller when not hovered */
+        .sidebar:not(:hover) {
+            width: 100px;
+            padding: 20px 5px;
+            right: 25px;
+        }
+
+        /* Floating glow effect */
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 45px;
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar:hover::before {
+            opacity: 1;
+        }
+
+        .sidebar-item {
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+       .sidebar .sidebar-item a {
+    text-decoration: none !important;
+}
+
+        .sidebar-item:hover {
+            background: rgba(0, 0, 0, 0.2);
+            transform: scale(1.1);
+        }
+
+        .sidebar-item.active {
+            background: black;
+            color: #ff0000;
+        }
+
+        /* Updated Social Media Styles */
+        .social-media {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 80px;
+            padding: 0 2rem;
+            position: relative;
+            margin-right: 850px;
+        }
+
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 3px solid #ff0000;
+            border-radius: 50%;
+            color: #ff0000;
+            font-size: 32px;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: visible;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Intense Glowing Effect */
+        .social-icon {
+            box-shadow: 
+                0 0 20px rgba(255, 0, 0, 0.5),
+                0 0 40px rgba(255, 0, 0, 0.3),
+                0 0 60px rgba(255, 0, 0, 0.2),
+                0 0 80px rgba(255, 0, 0, 0.1);
+            animation: pulseGlow 3s ease-in-out infinite alternate;
+        }
+
+        /* Multiple Glowing Layers */
+        .social-icon::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(45deg, 
+                #ff0000, #ff3333, #ff6666, #ff0000, 
+                #cc0000, #ff4444, #ff0000);
+            background-size: 300% 300%;
+            border-radius: 50%;
+            z-index: -1;
+            animation: gradientShift 4s ease infinite, outerGlow 2s ease-in-out infinite alternate;
+            opacity: 0.7;
+        }
+
+        .social-icon::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: radial-gradient(circle, 
+                rgba(255, 0, 0, 0.3) 0%, 
+                rgba(255, 0, 0, 0.1) 50%, 
+                transparent 70%);
+            border-radius: 50%;
+            z-index: -2;
+            animation: outerPulse 3s ease-in-out infinite;
+        }
+
+        /* Hover Effects */
+        .social-icon:hover {
+            transform: translateY(-10px) scale(1.2);
+            background: rgba(255, 0, 0, 0.3);
+            border: 3px solid #fff;
+            color: #fff;
+            box-shadow: 
+                0 15px 40px rgba(255, 0, 0, 0.6),
+                0 0 60px rgba(255, 0, 0, 0.8),
+                0 0 100px rgba(255, 0, 0, 0.4),
+                0 0 140px rgba(255, 0, 0, 0.2);
+            animation: intensePulse 0.6s ease infinite;
+        }
+
+        /* Animation Keyframes */
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 
+                    0 0 20px rgba(255, 0, 0, 0.5),
+                    0 0 40px rgba(255, 0, 0, 0.3),
+                    0 0 60px rgba(255, 0, 0, 0.2);
+            }
+            100% {
+                box-shadow: 
+                    0 0 30px rgba(255, 0, 0, 0.8),
+                    0 0 60px rgba(255, 0, 0, 0.5),
+                    0 0 90px rgba(255, 0, 0, 0.3),
+                    0 0 120px rgba(255, 0, 0, 0.1);
+            }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes outerGlow {
+            0% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes outerPulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.3);
+            }
+        }
+
+        @keyframes intensePulse {
+            0%, 100% { 
+                transform: translateY(-10px) scale(1.2); 
+            }
+            50% { 
+                transform: translateY(-15px) scale(1.25); 
+            }
+        }
+
+        /* Individual Icon Colors for Variety */
+        .social-icon:nth-child(1) {
+            --glow-color: #ff0000;
+            animation-delay: 0s;
+        }
+
+        .social-icon:nth-child(2) {
+            --glow-color: #ff1a1a;
+            animation-delay: 0.5s;
+        }
+
+        .social-icon:nth-child(3) {
+            --glow-color: #ff3333;
+            animation-delay: 1s;
+        }
+
+        .social-icon:nth-child(4) {
+            --glow-color: #ff4d4d;
+            animation-delay: 1.5s;
+        }
+
+        .social-icon:nth-child(5) {
+            --glow-color: #ff6666;
+            animation-delay: 2s;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .social-media {
+                gap: 30px;
+                padding: 0 1rem;
+            }
+            
+            .social-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .social-media {
+                gap: 20px;
+                padding: 0 0.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .social-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .social-media {
+                gap: 15px;
+            }
+            
+            .social-icon {
+                width: 55px;
+                height: 55px;
+                font-size: 22px;
+            }
+        }
+    
+
+
+.animated-heading {
+    animation: slideInLeft 1.5s ease-out;
+}
+
+.animated-heading span {
+    display: inline-block;
+    animation: fadeInUp 1s ease-out both;
+}
+
+.animated-heading span:nth-child(1) {
+    animation-delay: 0.5s;
+    animation: slideInBounce 1.2s ease-out 0.3s both, textGlow 3s ease-in-out 2s infinite alternate;
+}
+
+.animated-heading span:nth-child(3) {
+    animation-delay: 0.8s;
+    animation: slideInBounce 1.2s ease-out 0.6s both, fadeInUp 1s ease-out 0.8s both;
+}
+
+.animated-heading span:nth-child(5) {
+    animation-delay: 1.1s;
+    animation: slideInBounce 1.2s ease-out 0.9s both, fadeInUp 1s ease-out 1.1s both;
+}
+
+/* Keyframe Animations */
+@keyframes slideInLeft {
+    0% {
+        transform: translateX(-100px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInBounce {
+    0% {
+        transform: translateX(-50px) scale(0.8);
+        opacity: 0;
+    }
+    60% {
+        transform: translateX(10px) scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes textGlow {
+    0% {
+        text-shadow: 
+            0 0 5px rgba(255, 0, 0, 0.5),
+            0 0 10px rgba(255, 0, 0, 0.5),
+            0 0 15px rgba(255, 0, 0, 0.3);
+    }
+    100% {
+        text-shadow: 
+            0 0 10px rgba(255, 0, 0, 0.8),
+            0 0 20px rgba(255, 0, 0, 0.6),
+            0 0 30px rgba(255, 0, 0, 0.4),
+            0 0 40px rgba(255, 0, 0, 0.2);
+    }
+}
+
+/* Continuous pulse animation for "MY" */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.pulse-text {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Typing effect animation */
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes blink {
+    50% {
+        border-color: transparent;
+    }
+}
+
+/* Hover effects */
+.animated-heading:hover span:nth-child(1) {
+    animation: pulse 0.6s ease-in-out infinite;
+    color: #ff3333;
+}
+
+.animated-heading:hover span:nth-child(3),
+.animated-heading:hover span:nth-child(5) {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+
+/* Letter spacing animation */
+@keyframes letterSpacing {
+    0% {
+        letter-spacing: -5px;
+        opacity: 0;
+    }
+    40% {
+        letter-spacing: 5px;
+        opacity: 0.6;
+    }
+    100% {
+        letter-spacing: normal;
+        opacity: 1;
+    }
+}
+
+.letter-spacing-anim {
+    animation: letterSpacing 1.5s ease-out;
+}
+@media (max-width: 768px) {
+    .text-9xl { font-size: 4rem; }
+    .social-media { gap: 30px; }
+}

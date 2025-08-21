@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - My Desire Salon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.cdnfonts.com/css/backsteal" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff0000',
+                        secondary: '#000000',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Backsteal', sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        }
+
+        .booking-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .staff-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid transparent;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .staff-card:hover {
+            border-color: #ff0000;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.3);
+        }
+
+        .staff-card.selected {
+            border-color: #ff0000;
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        .service-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .service-item:hover {
+            border-color: #ff0000;
+            background: rgba(255, 0, 0, 0.05);
+        }
+
+        .service-item.selected {
+            border-color: #ff0000;
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        .time-slot {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .time-slot:hover {
+            border-color: #ff0000;
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        .time-slot.selected {
+            background: #ff0000;
+            border-color: #ff0000;
+            color: white;
+        }
+
+        .time-slot.unavailable {
+            background: rgba(128, 128, 128, 0.3);
+            border-color: rgba(128, 128, 128, 0.5);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .price-range {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(255, 0, 0, 0.05));
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .glow-button {
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .glow-button:hover {
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .calendar-day {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .calendar-day:hover {
+            border-color: #ff0000;
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        .calendar-day.selected {
+            background: #ff0000;
+            border-color: #ff0000;
+            color: white;
+        }
+
+        .calendar-day.unavailable {
+            background: rgba(128, 128, 128, 0.2);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+    <!-- Header with Logo -->
+    <div class="fixed top-0 left-0 p-8 z-50">
+        <div>
+            <img src="images/lg.png" alt="My Desire Salon" class="h-16 brightness-0 invert cursor-pointer" onclick="window.location.href='index.html'">
+        </div>
+    </div>
+
+    <!-- Main Booking Content -->
+    <div class="pt-32 pb-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <!-- Page Title -->
+            <div class="text-center mb-12">
+                <h1 class="text-5xl md:text-6xl font-bold mb-4">
+                    <span class="text-primary">BOOK YOUR</span><br>
+                    <span class="text-white">APPOINTMENT</span>
+                </h1>
+                <p class="text-xl text-gray-300">Choose your preferred stylist, service, and time</p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Left Column - Staff Selection -->
+                <div class="booking-card p-6">
+                    <h2 class="text-2xl font-bold mb-6 text-primary">Select Your Stylist</h2>
+                    <div class="space-y-4" id="staffSelection">
+                        <!-- Staff cards will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Middle Column - Services & Pricing -->
+                <div class="booking-card p-6">
+                    <h2 class="text-2xl font-bold mb-6 text-primary">Choose Service</h2>
+                    <div class="space-y-3" id="serviceSelection">
+                        <!-- Services will be populated by JavaScript -->
+                    </div>
+
+                    <!-- Price Range Display -->
+                    <div class="price-range mt-6 p-4">
+                        <h3 class="text-lg font-semibold mb-2">Estimated Price</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary" id="priceDisplay">KSh0 - KSh0</span>
+                            <span class="text-sm text-gray-400">Negotiable</span>
+                        </div>
+                        <div class="mt-3">
+                            <label class="block text-sm mb-2">Your Budget Range</label>
+                            <input type="range" id="budgetRange" min="20" max="300" value="100" class="w-full accent-red-500">
+                            <div class="flex justify-between text-sm text-gray-400">
+                                <span>Ksh20</span>
+                                <span id="budgetValue">Ksh100</span>
+                                <span>Ksh300</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Date & Time -->
+                <div class="booking-card p-6">
+                    <h2 class="text-2xl font-bold mb-6 text-primary">Select Date & Time</h2>
+                    
+                    <!-- Calendar -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-3">Choose Date</h3>
+                        <div class="grid grid-cols-7 gap-2 text-center">
+                            <div class="text-xs text-gray-400 p-2">Sun</div>
+                            <div class="text-xs text-gray-400 p-2">Mon</div>
+                            <div class="text-xs text-gray-400 p-2">Tue</div>
+                            <div class="text-xs text-gray-400 p-2">Wed</div>
+                            <div class="text-xs text-gray-400 p-2">Thu</div>
+                            <div class="text-xs text-gray-400 p-2">Fri</div>
+                            <div class="text-xs text-gray-400 p-2">Sat</div>
+                            <!-- Calendar days will be populated by JavaScript -->
+                            <div id="calendarDays"></div>
+                        </div>
+                    </div>
+
+                    <!-- Time Slots -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Available Times</h3>
+                        <div class="grid grid-cols-3 gap-2" id="timeSlots">
+                            <!-- Time slots will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Duration Estimate -->
+                    <div class="mt-4 p-3 bg-gray-800 rounded-lg">
+                        <div class="flex justify-between">
+                            <span>Estimated Duration:</span>
+                            <span id="durationDisplay" class="text-primary font-bold">0 mins</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Information Form -->
+            <div class="booking-card p-6 mt-8">
+                <h2 class="text-2xl font-bold mb-6 text-primary">Your Information</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Full Name *</label>
+                        <input type="text" id="customerName" class="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg focus:border-red-500 focus:outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Phone Number *</label>
+                        <input type="tel" id="customerPhone" class="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg focus:border-red-500 focus:outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Email</label>
+                        <input type="email" id="customerEmail" class="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg focus:border-red-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Preferred Contact</label>
+                        <select id="contactMethod" class="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg focus:border-red-500 focus:outline-none">
+                            <option value="phone">Phone Call</option>
+                            <option value="sms">SMS</option>
+                            <option value="email">Email</option>
+                            <option value="whatsapp">WhatsApp</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label class="block text-sm font-medium mb-2">Special Requests / Notes</label>
+                    <textarea id="specialRequests" rows="3" class="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg focus:border-red-500 focus:outline-none" placeholder="Any special requests or hair concerns..."></textarea>
+                </div>
+            </div>
+
+            <!-- Booking Summary & Submit -->
+            <div class="booking-card p-6 mt-8">
+                <h2 class="text-2xl font-bold mb-6 text-primary">Booking Summary</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>Stylist:</span>
+                            <span id="selectedStaff" class="font-medium">Not selected</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Service:</span>
+                            <span id="selectedService" class="font-medium">Not selected</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Date:</span>
+                            <span id="selectedDate" class="font-medium">Not selected</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Time:</span>
+                            <span id="selectedTime" class="font-medium">Not selected</span>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>Duration:</span>
+                            <span id="summaryDuration" class="font-medium">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Price Range:</span>
+                            <span id="summaryPrice" class="font-medium text-primary">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Your Budget:</span>
+                            <span id="summaryBudget" class="font-medium">$100</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <button id="bookNowBtn" class="glow-button px-12 py-4 text-xl font-bold rounded-lg text-white">
+                        <i class="fas fa-calendar-check mr-2"></i>
+                        BOOK APPOINTMENT
+                    </button>
+                    <p class="text-sm text-gray-400 mt-2">You'll receive a confirmation call within 30 minutes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - replace with your actual staff and services
+        const staffData = [
+            {
+                id: 1,
+                name: "Sarah Johnson",
+                specialty: "Hair Cutting & Styling",
+                experience: "5+ years",
+                rating: 4.9,
+                image: "https://via.placeholder.com/80x80/ff0000/ffffff?text=SJ"
+            },
+            {
+                id: 2,
+                name: "Maria Rodriguez",
+                specialty: "Hair Coloring & Highlights",
+                experience: "7+ years",
+                rating: 4.8,
+                image: "https://via.placeholder.com/80x80/ff0000/ffffff?text=MR"
+            },
+            {
+                id: 3,
+                name: "Ashley Kim",
+                specialty: "Perms & Treatments",
+                experience: "6+ years",
+                rating: 4.9,
+                image: "https://via.placeholder.com/80x80/ff0000/ffffff?text=AK"
+            },
+            {
+                id: 4,
+                name: "Jennifer White",
+                specialty: "Bridal & Special Events",
+                experience: "8+ years",
+                rating: 5.0,
+                image: "https://via.placeholder.com/80x80/ff0000/ffffff?text=JW"
+            }
+        ];
+
+        const servicesData = [
+            { id: 1, name: "Haircut & Blow Dry", minPrice: 25, maxPrice: 45, duration: 60 },
+            { id: 2, name: "Hair Coloring", minPrice: 60, maxPrice: 120, duration: 120 },
+            { id: 3, name: "Highlights", minPrice: 80, maxPrice: 150, duration: 150 },
+            { id: 4, name: "Perm", minPrice: 70, maxPrice: 130, duration: 180 },
+            { id: 5, name: "Deep Conditioning Treatment", minPrice: 30, maxPrice: 60, duration: 45 },
+            { id: 6, name: "Bridal Hair Styling", minPrice: 100, maxPrice: 200, duration: 90 },
+            { id: 7, name: "Hair Extensions", minPrice: 150, maxPrice: 300, duration: 180 },
+            { id: 8, name: "Keratin Treatment", minPrice: 120, maxPrice: 250, duration: 210 }
+        ];
+
+        const timeSlots = [
+            "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
+            "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM",
+            "3:00 PM", "3:30 PM", "4:00 PM", "4:30 PM", "5:00 PM", "5:30 PM", "6:00 PM"
+        ];
+
+        let selectedStaff = null;
+        let selectedService = null;
+        let selectedDate = null;
+        let selectedTime = null;
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            populateStaff();
+            populateServices();
+            populateCalendar();
+            populateTimeSlots();
+            setupEventListeners();
+        });
+
+        function populateStaff() {
+            const staffContainer = document.getElementById('staffSelection');
+            staffContainer.innerHTML = '';
+
+            staffData.forEach(staff => {
+                const staffCard = document.createElement('div');
+                staffCard.className = 'staff-card p-4';
+                staffCard.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <img src="${staff.image}" alt="${staff.name}" class="w-16 h-16 rounded-full">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-lg">${staff.name}</h3>
+                            <p class="text-sm text-gray-400">${staff.specialty}</p>
+                            <div class="flex items-center mt-1">
+                                <span class="text-yellow-400 text-sm">★ ${staff.rating}</span>
+                                <span class="text-xs text-gray-500 ml-2">${staff.experience}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                staffCard.addEventListener('click', () => selectStaff(staff, staffCard));
+                staffContainer.appendChild(staffCard);
+            });
+        }
+
+        function populateServices() {
+            const servicesContainer = document.getElementById('serviceSelection');
+            servicesContainer.innerHTML = '';
+
+            servicesData.forEach(service => {
+                const serviceItem = document.createElement('div');
+                serviceItem.className = 'service-item p-4';
+                serviceItem.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-medium">${service.name}</h4>
+                            <p class="text-sm text-gray-400">${service.duration} minutes</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-primary">$${service.minPrice} - $${service.maxPrice}</p>
+                        </div>
+                    </div>
+                `;
+                serviceItem.addEventListener('click', () => selectService(service, serviceItem));
+                servicesContainer.appendChild(serviceItem);
+            });
+        }
+
+        function populateCalendar() {
+            const calendarContainer = document.getElementById('calendarDays');
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+
+            // Get first day of the month and number of days
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                calendarContainer.appendChild(emptyDay);
+            }
+
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                const date = new Date(currentYear, currentMonth, day);
+                const isToday = date.toDateString() === today.toDateString();
+                const isPast = date < today;
+
+                dayElement.className = `calendar-day p-2 text-center rounded ${isPast ? 'unavailable' : ''}`;
+                dayElement.textContent = day;
+                
+                if (isToday) {
+                    dayElement.classList.add('border-2', 'border-yellow-400');
+                }
+
+                if (!isPast) {
+                    dayElement.addEventListener('click', () => selectDate(date, dayElement));
+                }
+
+                calendarContainer.appendChild(dayElement);
+            }
+        }
+
+        function populateTimeSlots() {
+            const timeSlotsContainer = document.getElementById('timeSlots');
+            timeSlotsContainer.innerHTML = '';
+
+            timeSlots.forEach(time => {
+                const timeSlot = document.createElement('div');
+                timeSlot.className = 'time-slot p-2 text-center text-sm';
+                timeSlot.textContent = time;
+                timeSlot.addEventListener('click', () => selectTime(time, timeSlot));
+                timeSlotsContainer.appendChild(timeSlot);
+            });
+        }
+
+        function selectStaff(staff, element) {
+            // Remove previous selection
+            document.querySelectorAll('.staff-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedStaff = staff;
+            updateSummary();
+        }
+
+        function selectService(service, element) {
+            // Remove previous selection
+            document.querySelectorAll('.service-item').forEach(item => item.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedService = service;
+            document.getElementById('priceDisplay').textContent = `$${service.minPrice} - $${service.maxPrice}`;
+            document.getElementById('durationDisplay').textContent = `${service.duration} mins`;
+            updateSummary();
+        }
+
+        function selectDate(date, element) {
+            // Remove previous selection
+            document.querySelectorAll('.calendar-day').forEach(day => day.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedDate = date;
+            updateSummary();
+        }
+
+        function selectTime(time, element) {
+            // Remove previous selection
+            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedTime = time;
+            updateSummary();
+        }
+
+        function setupEventListeners() {
+            const budgetRange = document.getElementById('budgetRange');
+            const budgetValue = document.getElementById('budgetValue');
+
+            budgetRange.addEventListener('input', function() {
+                budgetValue.textContent = `$${this.value}`;
+                document.getElementById('summaryBudget').textContent = `$${this.value}`;
+            });
+
+            document.getElementById('bookNowBtn').addEventListener('click', bookAppointment);
+        }
+
+        function updateSummary() {
+            document.getElementById('selectedStaff').textContent = selectedStaff ? selectedStaff.name : 'Not selected';
+            document.getElementById('selectedService').textContent = selectedService ? selectedService.name : 'Not selected';
+            document.getElementById('selectedDate').textContent = selectedDate ? selectedDate.toLocaleDateString() : 'Not selected';
+            document.getElementById('selectedTime').textContent = selectedTime || 'Not selected';
+            
+            if (selectedService) {
+                document.getElementById('summaryDuration').textContent = `${selectedService.duration} mins`;
+                document.getElementById('summaryPrice').textContent = `$${selectedService.minPrice} - $${selectedService.maxPrice}`;
+            }
+        }
+
+        function bookAppointment() {
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+
+            if (!name || !phone) {
+                alert('Please fill in your name and phone number');
+                return;
+            }
+
+            if (!selectedStaff || !selectedService || !selectedDate || !selectedTime) {
+                alert('Please select a stylist, service, date, and time');
+                return;
+            }
+
+            // Here you would normally send the booking data to your backend
+            const bookingData = {
+                staff: selectedStaff,
+                service: selectedService,
+                date: selectedDate,
+                time: selectedTime,
+                customer: {
+                    name: name,
+                    phone: phone,
+                    email: document.getElementById('customerEmail').value,
+                    contactMethod: document.getElementById('contactMethod').value
+                },
+                specialRequests: document.getElementById('specialRequests').value,
+                budget: document.getElementById('budgetRange').value
+            };
+
+            console.log('Booking Data:', bookingData);
+            
+            // Show success message
+            alert(`Booking confirmed! You'll receive a confirmation call within 30 minutes.\n\nBooking Details:\n- Stylist: ${selectedStaff.name}\n- Service: ${selectedService.name}\n- Date: ${selectedDate.toLocaleDateString()}\n- Time: ${selectedTime}`);
+        }
+    </script>
+</body>
+</html>
