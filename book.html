@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.cdnfonts.com/css/backsteal" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -136,6 +137,46 @@
             cursor: not-allowed;
             opacity: 0.5;
         }
+        @media (max-width: 768px) {
+          .sidebar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 70px;
+            margin: 0;
+            flex-direction: row;
+            top: auto;
+            background: #ff0000;
+            transform: none;
+            z-index: 9999;
+          }
+          .sidebar-item {
+            flex: 1 1 0;
+            min-width: 0;
+            min-height: 0;
+            width: 50px;
+            height: 50px;
+            margin: 0 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 20px;
+            color: white;
+            background: transparent;
+            transition: all 0.3s ease;
+          }
+          .sidebar-item.active {
+            background: black;
+            color: #ff0000;
+          }
+          .sidebar-item:hover {
+            background: rgba(0, 0, 0, 0.2);
+            transform: scale(1.1);
+          }
+        }
     </style>
 </head>
 <body class="text-white min-h-screen">
@@ -145,7 +186,15 @@
             <img src="images/lg.png" alt="My Desire Salon" class="h-16 brightness-0 invert cursor-pointer" onclick="window.location.href='index.html'">
         </div>
     </div>
-
+      <div class="sidebar">
+        <a href="index.html" class="sidebar-item active"><i class="fas fa-home"></i></a>
+        <a href="chat.html" class="sidebar-item" id="chatToggle"><i class="fas fa-comments"></i></a>
+        <a href="gallery.html" class="sidebar-item"><i class="fas fa-images"></i></a>
+        <a href="contact.html" class="sidebar-item"><i class="fas fa-phone-volume"></i></a>
+        <a href="profile.html" class="sidebar-item"><i class="fas fa-user"></i></a>
+        <a href="settings.html" class="sidebar-item"><i class="fas fa-cog"></i></a>
+        <div class="sidebar-item"><i class="fas fa-shop"></i></div>
+    </div>
     <!-- Main Booking Content -->
     <div class="pt-32 pb-20 px-4">
         <div class="max-w-6xl mx-auto">
@@ -311,13 +360,13 @@
             </div>
         </div>
     </div>
-
+   
     <script>
         // Sample data - replace with your actual staff and services
         const staffData = [
             {
                 id: 1,
-                name: "Sarah Johnson",
+                name: "Harrison",
                 specialty: "Hair Cutting & Styling",
                 experience: "5+ years",
                 rating: 4.9,
@@ -419,7 +468,7 @@
                             <p class="text-sm text-gray-400">${service.duration} minutes</p>
                         </div>
                         <div class="text-right">
-                            <p class="font-bold text-primary">$${service.minPrice} - $${service.maxPrice}</p>
+                            <p class="font-bold text-primary">Ksh ${service.minPrice} - Ksh${service.maxPrice}</p>
                         </div>
                     </div>
                 `;
@@ -574,4 +623,7 @@
         }
     </script>
 </body>
+ <footer style="align-items: center; justify-content: center;">&copy; Copyright (c) 2025 Petley Inc. All rights reserved.<br>
+Unauthorized copying, modification, or distribution of this software is prohibited.</footer>
+    
 </html>
