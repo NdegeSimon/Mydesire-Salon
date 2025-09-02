@@ -14,6 +14,8 @@ class User(Base):
 
     appointments = relationship("Appointment", back_populates="user", cascade="all, delete")
     notifications = relationship("Notification", back_populates="user", cascade="all, delete")
+    payments = relationship("payments", back_populates="user", cascade="all, delete")
+    
 
 
 class Appointment(Base):
@@ -38,7 +40,7 @@ class SalonAttendant(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     appointments = relationship("Appointment", back_populates="salon_attendant", cascade="all, delete")
-
+    reviews = relationship("Reviews", back_populates="salon_attendant", cascade="all, delete")
 
 class Notification(Base):
     __tablename__ = 'notifications'
@@ -49,3 +51,27 @@ class Notification(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="notifications")
+    
+class payments(Base):
+    __tablename__ = 'payments'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    appointment_id = Column(Integer, ForeignKey("appointments.id"), nullable=False)
+    amount = Column(Integer, nullable=False)
+    status = Column(String(50), nullable=False, default="pending")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="payments")
+    appointment = relationship("Appointment", back_populates="payments")
+
+class Reviews(Base):
+    __tablename__ = 'reviews'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    appointment_id = Column(Integer, ForeignKey("appointments.id"), nullable=False)
+    rating = Column(Integer, nullable=False)
+    comment = Column(String(255), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="reviews")
+    appointment = relationship("Appointment", back_populates="reviews")
