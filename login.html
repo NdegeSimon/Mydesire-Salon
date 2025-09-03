@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">    
+    <head>
+         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sign Up - My Desire Salon</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Neoda:wght@400;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.cdnfonts.com/css/backsteal" rel="stylesheet">
+        <link href="style.css" rel="stylesheet">
+        <style>
+            body{
+                font-family: 'backsteal', sans-serif;
+                background-color: #000000;
+                color: #333;
+                align-items: center;
+                justify-content: center;
+                display: flex;
+                flex-direction: column;
+            }
+            form{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                width: 600px;
+                margin: 0 auto;
+                background: rgb(252, 250, 250);
+                padding: 50px;
+                border-radius: 5px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                margin-top: 200px;
+                
+            }
+            label{
+                display: block;
+                margin-bottom: 5px;
+                color: #e60000;
+            }
+            input {
+                width: 100%;
+                padding: 30px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            button {
+                width: 100%;
+                padding: 20px;
+                background: #ff0000;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                gap: 10px;
+                font-weight: bold;
+                font-size: larger;
+            }
+            button:hover {
+                background: #e60000;
+            }
+            h1{
+                color: #e60000;
+            }
+
+
+        </style>
+    </head>
+    <body>
+        <div>
+            <form action="">
+                <h1>Log In</h1>
+               <label for="name">NAME</label>
+               <input type="text" id="name" name="name" placeholder="NAME" required>
+
+               <label for="password">PASSWORD</label>
+               <input type="text" id="password" name="password" placeholder="PASSWORD" required>
+
+               <button type="submit">Submit</button>
+            </form>
+
+        </div>
+    </body>
+</html>
