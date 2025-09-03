@@ -95,6 +95,42 @@
             background: black;
             color: #ff0000;
         }
+   .icon {
+  position: relative;
+  color: white;
+  font-size: 22px;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Tooltip */
+.icon::after {
+  content: attr(data-label);
+  position: absolute;
+  right: 100%; /* places tooltip left of the sidebar */
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 10px;
+  
+  background: black;
+  color: white;
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  
+  opacity: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.icon:hover::after {
+  opacity: 1;
+}
+
+
 
         /* Updated Social Media Styles */
         .social-media {
