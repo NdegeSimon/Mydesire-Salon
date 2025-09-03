@@ -3,7 +3,16 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
+          
         }
+        .carousel-container span {
+  margin-left: 30px;  /* adjust this value */
+}
+
+.carousel-container button {
+  margin-left: 30px;  /* adjust this value */
+}
+
         .carousel-slide {
          position: absolute;
          top: 0;
@@ -20,6 +29,33 @@
         .carousel-slide.active {
             opacity: 1;
         }
+       .button-container {
+    position: fixed;   /* stays on top-right always */
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 50;       /* same as logo, so it floats above carousel */
+}
+
+.btn {
+    background: #ff0000;
+    color: white;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Backsteal', sans-serif;
+}
+
+.btn:hover {
+    background: #a00000;
+    transform: scale(1.05);
+}
+
         
         /* Floating Hanging Sidebar */
         .sidebar {
