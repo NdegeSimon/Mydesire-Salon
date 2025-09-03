@@ -1,12 +1,6 @@
 from datetime import datetime
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from database import SessionLocal
 from models import User, SalonAttendant, Appointment, Notification, Base
-
-# ✅ Setup database session
-DATABASE_URL = "sqlite:///users.db"
-engine = create_engine(DATABASE_URL, echo=True)
-SessionLocal = sessionmaker(bind=engine)
 
 
 # ✅ Create booking with ORM

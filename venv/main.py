@@ -10,10 +10,10 @@ init_db()
 session = SessionLocal()
 
 # Add a user
-new_user = User(name="Alice", email="alice@example.com", password="hashed_password")
+new_user = User(username="Alice", email="alice@example.com")
+new_user.set_password("password123")
 session.add(new_user)
 session.commit()
-
 # Add appointment for Alice
 appointment = Appointment(
     user_id=new_user.id,

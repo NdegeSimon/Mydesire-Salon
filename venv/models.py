@@ -1,6 +1,8 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import declarative_base, relationship
+from services import services
+from werkzeug.security import generate_password_hash, check_password_hash
 
 Base = declarative_base()
 
@@ -11,17 +13,15 @@ class User(Base):
     email = Column(String(255), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
-
     appointments = relationship("Appointment", back_populates="user", cascade="all, delete")
     notifications = relationship("Notification", back_populates="user", cascade="all, delete")
-    payments = relationship("payments", back_populates="user", cascade="all, delete")
+    payments = relationship("Payments", back_populates="user", cascade="all, delete")
     
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
+        return check_password_hash(self.password, password)
 
 
 class Appointment(Base):
@@ -55,10 +55,9 @@ class Notification(Base):
     message = Column(String(255), nullable=False)
     is_read = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
-
     user = relationship("User", back_populates="notifications")
-    
-class payments(Base):
+
+class Payments(Base):
     __tablename__ = 'payments'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
@@ -69,7 +68,6 @@ class payments(Base):
 
     user = relationship("User", back_populates="payments")
     appointment = relationship("Appointment", back_populates="payments")
-
 class Reviews(Base):
     __tablename__ = 'reviews'
     id = Column(Integer, primary_key=True)
