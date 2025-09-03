@@ -6,11 +6,8 @@
     <title>My Desire - Make Your Face the Center of Attention</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Neoda:wght@400;700&display=swap" rel="stylesheet">
-     <link href="https://fonts.cdnfonts.com/css/backsteal" rel="stylesheet">
-     <link href="style.css" rel="stylesheet">
-    <!-- OR if it's from another font provider -->
-    <link href="https://www.dafontfree.co/download/backsteal/" rel="stylesheet">
-    <!-- Add this line with your other links -->
+    <link href="https://fonts.cdnfonts.com/css/backsteal" rel="stylesheet"> <!-- Use one source for Backsteal -->
+    <link href="style.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -24,30 +21,36 @@
             }
         }
     </script>
-   
 </head>
 <body class="bg-secondary text-white font-sans overflow-x-hidden">
-    <!-- Top Left Logo -->
-    <div class="fixed top-0 left-0 p-8 z-50">
+    <!-- Top Left Logo and Buttons -->
+    <div class="fixed top-0 left-0 p-8 z-50 flex items-center justify-between w-full">
         <div>
-            <img src="images/lg.png" alt="Logo" class="h-24 w-auto brightness-0 invert hover:scale-110 transition-transform cursor-pointer" onclick="window.location.href='index.html'">
-            <!-- <img src="images/lg.png" alt="Logo" class="h-20 brightness-0 invert cursor-pointer" "> -->
-       
-</div>
-<div class="button-container">
-    <a href="signup.html">
-        <button class="btn">SIGN UP</button>
-    </a>
-    <a href="login.html">
-        <button class="btn">LOG IN</button>
-    </a>
-</div>
- </div>
-             
-    </a>
-     
-    <!-- Floating Hanging Sidebar -->
-    <div class="sidebar">
+            <a href="index.html">
+                <img src="images/lg.png" alt="My Desire Salon Logo" class="h-24 w-auto brightness-0 invert hover:scale-110 transition-transform cursor-pointer">
+            </a>
+        </div>
+        <div class="button-container flex gap-4">
+            <a href="signup.html">
+                <button class="btn bg-primary hover:bg-red-700 text-white px-6 py-3 text-base font-bold rounded-lg transition-all hover:scale-105" style="font-family: 'Backsteal', sans-serif;">SIGN UP</button>
+            </a>
+            <a href="login.html">
+                <button class="btn bg-primary hover:bg-red-700 text-white px-6 py-3 text-base font-bold rounded-lg transition-all hover:scale-105" style="font-family: 'Backsteal', sans-serif;">LOG IN</button>
+            </a>
+        </div>
+    </div>
+
+    <!-- Floating Sidebar -->
+    <!-- <div class="sidebar fixed top-1/2 right-2 -translate-y-1/2 flex flex-col space-y-4 text-2xl z-40">
+        <a href="index.html" class="sidebar-item active"><i class="fas fa-home"></i></a>
+        <a href="chat.html" class="sidebar-item" id="chatToggle"><i class="fas fa-comments"></i></a>
+        <a href="gallery.html" class="sidebar-item"><i class="fas fa-images"></i></a>
+        <a href="contact.html" class="sidebar-item"><i class="fas fa-phone-volume"></i></a>
+        <a href="profile.html" class="sidebar-item"><i class="fas fa-user"></i></a>
+        <a href="settings.html" class="sidebar-item"><i class="fas fa-cog"></i></a>
+        <div class="sidebar-item"><i class="fas fa-shop"></i></div>
+    </div> -->
+      <div class="sidebar">
         <a href="index.html" class="sidebar-item active"><i class="fas fa-home"></i></a>
         <a href="chat.html" class="sidebar-item" id="chatToggle"><i class="fas fa-comments"></i></a>
         <a href="gallery.html" class="sidebar-item"><i class="fas fa-images"></i></a>
@@ -56,15 +59,12 @@
         <a href="settings.html" class="sidebar-item"><i class="fas fa-cog"></i></a>
         <div class="sidebar-item"><i class="fas fa-shop"></i></div>
     </div>
-
     <!-- Full-screen Carousel -->
-    <div class="carousel-container">
-        <!-- Carousel Slides -->
-
+    <div class="carousel-container relative w-full h-screen">
         <div class="carousel-slide active" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(images/p2.jpg)">
-            <div class="absolute inset-0 flex items-center justify-start pl-0">
-                <div class="ml-0 pl-4">
-                    <h1 class="text-9xl md:text-9xl font-bold mb-6 ml-0 text-left" style="font-family: 'Backsteal', sans-serif;">
+            <div class="absolute inset-0 flex items-center justify-start pl-4">
+                <div>
+                    <h1 class="text-9xl font-bold mb-6 text-left" style="font-family: 'Backsteal', sans-serif;">
                         <span class="text-primary">MY </span><br>
                         <span class="text-white">DESIRE</span><br>
                         <span class="text-white">SALON</span>
@@ -79,10 +79,10 @@
                 </div>
             </div>
         </div>
-        <div class="carousel-slide active" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(images/p3.jpg)">
-            <div class="absolute inset-0 flex items-center justify-start pl-0">
-                <div class="ml-0 pl-4">
-                    <h1 class="text-9xl md:text-9xl font-bold mb-6 ml-0 text-left animated-heading" style="font-family: 'Backsteal', sans-serif;">
+        <div class="carousel-slide" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(images/p3.jpg)">
+            <div class="absolute inset-0 flex items-center justify-start pl-4">
+                <div>
+                    <h1 class="text-9xl font-bold mb-6 text-left animated-heading" style="font-family: 'Backsteal', sans-serif;">
                         <span class="text-primary pulse-text">MY </span><br>
                         <span class="text-white letter-spacing-anim">DESIRE</span><br>
                         <span class="text-white letter-spacing-anim">SALON</span>
@@ -98,32 +98,16 @@
             </div>
         </div>
     </div>
-<!-- End of carousel-container -->
-</div>
+
+    <!-- Social Media Icons -->
+    <div class="absolute bottom-20 left-1/4 transform -translate-x-1/2 z-40 flex space-x-6" marginright-50px>
+        <a href="#" class="social-icon text-lg" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-icon text-lg" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon text-lg" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-icon text-lg" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        <a href="#" class="social-icon text-lg" title="TikTok"><i class="fab fa-tiktok"></i></a>
     </div>
 
-        <!-- Social Media Icons - Positioned at Bottom of Carousel -->
-        <div class="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-40">
-            <div class="social-media">
-                <a href="#" class="social-icon" title="Facebook">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="#" class="social-icon" title="Instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="#" class="social-icon" title="Twitter">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a href="#" class="social-icon" title="WhatsApp">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-                <a href="#" class="social-icon" title="TikTok">
-                    <i class="fab fa-tiktok"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-      
     <!-- Carousel Navigation Dots -->
     <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-3 z-50">
         <button class="carousel-dot w-3 h-3 rounded-full bg-primary" data-index="0"></button>
@@ -131,7 +115,6 @@
     </div>
 
     <script>
-        // Carousel functionality
         const slides = document.querySelectorAll('.carousel-slide');
         const dots = document.querySelectorAll('.carousel-dot');
         let currentSlide = 0;
@@ -148,16 +131,15 @@
             currentSlide = index;
         }
 
-        // Dot navigation
         dots.forEach(dot => {
             dot.addEventListener('click', () => {
                 showSlide(parseInt(dot.dataset.index));
             });
         });
 
-        // Auto-rotate carousel
         setInterval(() => {
             showSlide((currentSlide + 1) % slides.length);
         }, 5000);
     </script>
-</div>
+</body>
+</html>

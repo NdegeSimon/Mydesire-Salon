@@ -1,43 +1,70 @@
-
-        .carousel-container {
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-          
-        }
-        .carousel-container span {
-  margin-left: 30px;  /* adjust this value */
+/* Base styles for custom classes */
+.sidebar-item, .social-icon {
+    color: white;
+    transition: all 0.3s ease;
+}
+.sidebar-item:hover, .social-icon:hover {
+    color: #ff0000;
+    transform: scale(1.2);
+}
+.pulse-text {
+    animation: pulse 2s infinite;
+}
+.letter-spacing-anim {
+    letter-spacing: 0.1em;
+    transition: letter-spacing 0.3s ease;
+}
+.letter-spacing-anim:hover {
+    letter-spacing: 0.2em;
+}
+.btn {
+    font-family: 'Backsteal', sans-serif;
+    background-color: #ff0000;
+    border: none;
+    cursor: pointer;
+}
+.btn:hover {
+    background-color: #cc0000;
 }
 
+/* Carousel Container */
+.carousel-container {
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+.carousel-container span {
+    margin-left: 30px; /* adjust this value */
+}
 .carousel-container button {
-  margin-left: 30px;  /* adjust this value */
+    margin-left: 30px; /* adjust this value */
+}
+.carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    background-blend-mode: multiply;
+    background-color: rgba(0, 0, 0, 0.7); /* 0.7 = 70% darker */
+}
+.carousel-slide.active {
+    opacity: 1;
 }
 
-        .carousel-slide {
-         position: absolute;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-         background-size: cover;
-         background-position: center;
-         opacity: 0;
-         transition: opacity 1s ease-in-out;
-         background-blend-mode: multiply;
-         background-color: rgba(0, 0, 0, 0.7); /* 0.7 = 70% darker */
-        }
-        .carousel-slide.active {
-            opacity: 1;
-        }
-       .button-container {
-    position: fixed;   /* stays on top-right always */
+/* Button Container */
+.button-container {
+    position: fixed; /* stays on top-right always */
     top: 20px;
     right: 20px;
     display: flex;
     gap: 10px;
-    z-index: 50;       /* same as logo, so it floats above carousel */
+    z-index: 50; /* same as logo, so it floats above carousel */
 }
-
 .btn {
     background: #ff0000;
     color: white;
@@ -50,359 +77,355 @@
     transition: all 0.3s ease;
     font-family: 'Backsteal', sans-serif;
 }
-
 .btn:hover {
     background: #a00000;
     transform: scale(1.05);
 }
 
-        
-        /* Floating Hanging Sidebar */
-        .sidebar {
-            position: fixed;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            top: 50%;
-            right: 30px;
-            transform: translateY(-50%);
-            width: 100px;
-            background-color: #ff0000;
-            padding: 20px 10px;
-            align-items: center;
-            gap: 40px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-            z-index: 999;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-        }
+/* Floating Hanging Sidebar - Aligned to the right for all devices */
+/* Base styles for custom classes */
+.sidebar-item, .social-icon {
+    color: white;
+    transition: all 0.3s ease;
+}
+.sidebar-item:hover, .social-icon:hover {
+    color: #ff0000;
+    transform: scale(1.2);
+}
+.pulse-text {
+    animation: pulse 2s infinite;
+}
+.letter-spacing-anim {
+    letter-spacing: 0.1em;
+    transition: letter-spacing 0.3s ease;
+}
+.letter-spacing-anim:hover {
+    letter-spacing: 0.2em;
+}
+.btn {
+    font-family: 'Backsteal', sans-serif;
+    background-color: #ff0000;
+    border: none;
+    cursor: pointer;
+}
+.btn:hover {
+    background-color: #cc0000;
+}
 
-        
-        /* Make it slightly smaller when not hovered */
-        .sidebar:not(:hover) {
-            width: 100px;
-            padding: 20px 5px;
-            right: 25px;
-        }
+/* Carousel Container */
+.carousel-container {
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+.carousel-container span {
+    margin-left: 30px; /* adjust this value */
+}
+.carousel-container button {
+    margin-left: 30px; /* adjust this value */
+}
+.carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    background-blend-mode: multiply;
+    background-color: rgba(0, 0, 0, 0.7); /* 0.7 = 70% darker */
+}
+.carousel-slide.active {
+    opacity: 1;
+}
 
-        /* Floating glow effect */
-        .sidebar::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background: rgba(255, 0, 0, 0.1);
-            border-radius: 45px;
-            z-index: -1;
-            filter: blur(10px);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
+/* Button Container */
+.button-container {
+    position: fixed; /* stays on top-right always */
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 50; /* same as logo, so it floats above carousel */
+}
+.btn {
+    background: #ff0000;
+    color: white;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Backsteal', sans-serif;
+}
+.btn:hover {
+    background: #a00000;
+    transform: scale(1.05);
+}
 
-        .sidebar:hover::before {
-            opacity: 1;
-        }
-
-        .sidebar-item {
-            width: 50px;
-            height: 50px;
-            background: transparent;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-       .sidebar .sidebar-item a {
+/* Floating Hanging Sidebar - Aligned to the extreme right */
+.sidebar {
+    position: fixed !important;
+    top: 50% !important;
+    right: 0 !important; /* Move to extreme right, opposite of current left */
+    transform: translateY(-50%) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100px !important;
+    background-color: #ff0000 !important;
+    padding: 20px 10px !important;
+    align-items: center !important;
+    gap: 40px !important;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) !important;
+    z-index: 999 !important;
+    border-radius: 50px !important;
+    transition: all 0.3s ease !important;
+}
+.sidebar:not(:hover) {
+    width: 100px !important;
+    padding: 20px 5px !important;
+    right: 0 !important; /* Maintain extreme right when not hovered */
+}
+.sidebar::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -10px !important;
+    left: -10px !important;
+    right: -10px !important;
+    bottom: -10px !important;
+    background: rgba(255, 0, 0, 0.1) !important;
+    border-radius: 45px !important;
+    z-index: -1 !important;
+    filter: blur(10px) !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+}
+.sidebar:hover::before {
+    opacity: 1 !important;
+}
+.sidebar-item {
+    width: 50px !important;
+    height: 50px !important;
+    background: transparent !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    font-size: 20px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+.sidebar .sidebar-item a {
     text-decoration: none !important;
 }
-
-        .sidebar-item:hover {
-            background: rgba(0, 0, 0, 0.2);
-            transform: scale(1.1);
-        }
-
-        .sidebar-item.active {
-            background: black;
-            color: #ff0000;
-        }
-   .icon {
-  position: relative;
-  color: white;
-  font-size: 22px;
-  padding: 15px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.sidebar-item:hover {
+    background: rgba(0, 0, 0, 0.2) !important;
+    transform: scale(1.1) !important;
 }
-
-/* Tooltip */
+.sidebar-item.active {
+    background: black !important;
+    color: #ff0000 !important;
+}
+.icon {
+    position: relative !important;
+    color: white !important;
+    font-size: 22px !important;
+    padding: 15px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
 .icon::after {
-  content: attr(data-label);
-  position: absolute;
-  right: 100%; /* places tooltip left of the sidebar */
-  top: 50%;
-  transform: translateY(-50%);
-  margin-right: 10px;
-  
-  background: black;
-  color: white;
-  font-size: 14px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  
-  opacity: 0;
-  white-space: nowrap;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
+    content: attr(data-label) !important;
+    position: absolute !important;
+    right: 100% !important; /* places tooltip left of the sidebar */
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin-right: 10px !important;
+    background: black !important;
+    color: white !important;
+    font-size: 14px !important;
+    padding: 5px 10px !important;
+    border-radius: 5px !important;
+    opacity: 0 !important;
+    white-space: nowrap !important;
+    pointer-events: none !important;
+    transition: opacity 0.3s ease !important;
 }
-
 .icon:hover::after {
-  opacity: 1;
+    opacity: 1 !important;
 }
 
-
-
-        /* Updated Social Media Styles */
-        .social-media {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 80px;
-            padding: 0 2rem;
-            position: relative;
-            margin-right: 850px;
-        }
-
-        .social-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 0, 0, 0.1);
-            border: 3px solid #ff0000;
-            border-radius: 50%;
-            color: #ff0000;
-            font-size: 32px;
-            text-decoration: none;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: visible;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Intense Glowing Effect */
-        .social-icon {
-            box-shadow: 
-                0 0 20px rgba(255, 0, 0, 0.5),
-                0 0 40px rgba(255, 0, 0, 0.3),
-                0 0 60px rgba(255, 0, 0, 0.2),
-                0 0 80px rgba(255, 0, 0, 0.1);
-            animation: pulseGlow 3s ease-in-out infinite alternate;
-        }
-
-        /* Multiple Glowing Layers */
-        .social-icon::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            background: linear-gradient(45deg, 
-                #ff0000, #ff3333, #ff6666, #ff0000, 
-                #cc0000, #ff4444, #ff0000);
-            background-size: 300% 300%;
-            border-radius: 50%;
-            z-index: -1;
-            animation: gradientShift 4s ease infinite, outerGlow 2s ease-in-out infinite alternate;
-            opacity: 0.7;
-        }
-
-        .social-icon::after {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background: radial-gradient(circle, 
-                rgba(255, 0, 0, 0.3) 0%, 
-                rgba(255, 0, 0, 0.1) 50%, 
-                transparent 70%);
-            border-radius: 50%;
-            z-index: -2;
-            animation: outerPulse 3s ease-in-out infinite;
-        }
-
-        /* Hover Effects */
-        .social-icon:hover {
-            transform: translateY(-10px) scale(1.2);
-            background: rgba(255, 0, 0, 0.3);
-            border: 3px solid #fff;
-            color: #fff;
-            box-shadow: 
-                0 15px 40px rgba(255, 0, 0, 0.6),
-                0 0 60px rgba(255, 0, 0, 0.8),
-                0 0 100px rgba(255, 0, 0, 0.4),
-                0 0 140px rgba(255, 0, 0, 0.2);
-            animation: intensePulse 0.6s ease infinite;
-        }
-
-        /* Animation Keyframes */
-        @keyframes pulseGlow {
-            0% {
-                box-shadow: 
-                    0 0 20px rgba(255, 0, 0, 0.5),
-                    0 0 40px rgba(255, 0, 0, 0.3),
-                    0 0 60px rgba(255, 0, 0, 0.2);
-            }
-            100% {
-                box-shadow: 
-                    0 0 30px rgba(255, 0, 0, 0.8),
-                    0 0 60px rgba(255, 0, 0, 0.5),
-                    0 0 90px rgba(255, 0, 0, 0.3),
-                    0 0 120px rgba(255, 0, 0, 0.1);
-            }
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes outerGlow {
-            0% {
-                opacity: 0.5;
-                transform: scale(1);
-            }
-            100% {
-                opacity: 0.8;
-                transform: scale(1.1);
-            }
-        }
-
-        @keyframes outerPulse {
-            0%, 100% {
-                opacity: 0.3;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.6;
-                transform: scale(1.3);
-            }
-        }
-
-        @keyframes intensePulse {
-            0%, 100% { 
-                transform: translateY(-10px) scale(1.2); 
-            }
-            50% { 
-                transform: translateY(-15px) scale(1.25); 
-            }
-        }
-
-        /* Individual Icon Colors for Variety */
-        .social-icon:nth-child(1) {
-            --glow-color: #ff0000;
-            animation-delay: 0s;
-        }
-
-        .social-icon:nth-child(2) {
-            --glow-color: #ff1a1a;
-            animation-delay: 0.5s;
-        }
-
-        .social-icon:nth-child(3) {
-            --glow-color: #ff3333;
-            animation-delay: 1s;
-        }
-
-        .social-icon:nth-child(4) {
-            --glow-color: #ff4d4d;
-            animation-delay: 1.5s;
-        }
-
-        .social-icon:nth-child(5) {
-            --glow-color: #ff6666;
-            animation-delay: 2s;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .social-media {
-                gap: 30px;
-                padding: 0 1rem;
-            }
-            
-            .social-icon {
-                width: 70px;
-                height: 70px;
-                font-size: 28px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .social-media {
-                gap: 20px;
-                padding: 0 0.5rem;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .social-icon {
-                width: 60px;
-                height: 60px;
-                font-size: 24px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .social-media {
-                gap: 15px;
-            }
-            
-            .social-icon {
-                width: 55px;
-                height: 55px;
-                font-size: 22px;
-            }
-        }
-    
-
-
+/* Social Media Styles - Positioned under BOOK NOW button */
+.social-media {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start; /* Align to left under button */
+    gap: 80px;
+    padding: 0 2rem;
+    margin-top: 16px; /* Space below BOOK NOW button */
+    z-index: 80;
+}
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 0, 0, 0.1);
+    border: 3px solid #ff0000;
+    border-radius: 50%;
+    color: #ff0000;
+    font-size: 32px;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: visible;
+    backdrop-filter: blur(10px);
+}
+.social-icon {
+    box-shadow: 
+        0 0 20px rgba(255, 0, 0, 0.5),
+        0 0 40px rgba(255, 0, 0, 0.3),
+        0 0 60px rgba(255, 0, 0, 0.2),
+        0 0 80px rgba(255, 0, 0, 0.1);
+    animation: pulseGlow 3s ease-in-out infinite alternate;
+}
+.social-icon::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: linear-gradient(45deg, 
+        #ff0000, #ff3333, #ff6666, #ff0000, 
+        #cc0000, #ff4444, #ff0000);
+    background-size: 300% 300%;
+    border-radius: 50%;
+    z-index: -1;
+    animation: gradientShift 4s ease infinite, outerGlow 2s ease-in-out infinite alternate;
+    opacity: 0.7;
+}
+.social-icon::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle, 
+        rgba(255, 0, 0, 0.3) 0%, 
+        rgba(255, 0, 0, 0.1) 50%, 
+        transparent 70%);
+    border-radius: 50%;
+    z-index: -2;
+    animation: outerPulse 3s ease-in-out infinite;
+}
+.social-icon:hover {
+    transform: translateY(-10px) scale(1.2);
+    background: rgba(255, 0, 0, 0.3);
+    border: 3px solid #fff;
+    color: #fff;
+    box-shadow: 
+        0 15px 40px rgba(255, 0, 0, 0.6),
+        0 0 60px rgba(255, 0, 0, 0.8),
+        0 0 100px rgba(255, 0, 0, 0.4),
+        0 0 140px rgba(255, 0, 0, 0.2);
+    animation: intensePulse 0.6s ease infinite;
+}
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 
+            0 0 20px rgba(255, 0, 0, 0.5),
+            0 0 40px rgba(255, 0, 0, 0.3),
+            0 0 60px rgba(255, 0, 0, 0.2);
+    }
+    100% {
+        box-shadow: 
+            0 0 30px rgba(255, 0, 0, 0.8),
+            0 0 60px rgba(255, 0, 0, 0.5),
+            0 0 90px rgba(255, 0, 0, 0.3),
+            0 0 120px rgba(255, 0, 0, 0.1);
+    }
+}
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+@keyframes outerGlow {
+    0% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+@keyframes outerPulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.3);
+    }
+}
+@keyframes intensePulse {
+    0%, 100% { 
+        transform: translateY(-10px) scale(1.2); 
+    }
+    50% { 
+        transform: translateY(-15px) scale(1.25); 
+    }
+}
+.social-icon:nth-child(1) {
+    --glow-color: #ff0000;
+    animation-delay: 0s;
+}
+.social-icon:nth-child(2) {
+    --glow-color: #ff1a1a;
+    animation-delay: 0.5s;
+}
+.social-icon:nth-child(3) {
+    --glow-color: #ff3333;
+    animation-delay: 1s;
+}
+.social-icon:nth-child(4) {
+    --glow-color: #ff4d4d;
+    animation-delay: 1.5s;
+}
+.social-icon:nth-child(5) {
+    --glow-color: #ff6666;
+    animation-delay: 2s;
+}
 .animated-heading {
     animation: slideInLeft 1.5s ease-out;
 }
-
 .animated-heading span {
     display: inline-block;
     animation: fadeInUp 1s ease-out both;
 }
-
 .animated-heading span:nth-child(1) {
     animation-delay: 0.5s;
     animation: slideInBounce 1.2s ease-out 0.3s both, textGlow 3s ease-in-out 2s infinite alternate;
 }
-
 .animated-heading span:nth-child(3) {
     animation-delay: 0.8s;
     animation: slideInBounce 1.2s ease-out 0.6s both, fadeInUp 1s ease-out 0.8s both;
 }
-
 .animated-heading span:nth-child(5) {
     animation-delay: 1.1s;
     animation: slideInBounce 1.2s ease-out 0.9s both, fadeInUp 1s ease-out 1.1s both;
 }
-
-/* Keyframe Animations */
 @keyframes slideInLeft {
     0% {
         transform: translateX(-100px);
@@ -413,7 +436,6 @@
         opacity: 1;
     }
 }
-
 @keyframes fadeInUp {
     0% {
         transform: translateY(30px);
@@ -424,7 +446,6 @@
         opacity: 1;
     }
 }
-
 @keyframes slideInBounce {
     0% {
         transform: translateX(-50px) scale(0.8);
@@ -439,7 +460,6 @@
         opacity: 1;
     }
 }
-
 @keyframes textGlow {
     0% {
         text-shadow: 
@@ -455,8 +475,6 @@
             0 0 40px rgba(255, 0, 0, 0.2);
     }
 }
-
-/* Continuous pulse animation for "MY" */
 @keyframes pulse {
     0%, 100% {
         transform: scale(1);
@@ -465,12 +483,9 @@
         transform: scale(1.05);
     }
 }
-
 .pulse-text {
     animation: pulse 2s ease-in-out infinite;
 }
-
-/* Typing effect animation */
 @keyframes typing {
     from {
         width: 0;
@@ -479,26 +494,20 @@
         width: 100%;
     }
 }
-
 @keyframes blink {
     50% {
         border-color: transparent;
     }
 }
-
-/* Hover effects */
 .animated-heading:hover span:nth-child(1) {
     animation: pulse 0.6s ease-in-out infinite;
     color: #ff3333;
 }
-
 .animated-heading:hover span:nth-child(3),
 .animated-heading:hover span:nth-child(5) {
     transform: translateY(-5px);
     transition: all 0.3s ease;
 }
-
-/* Letter spacing animation */
 @keyframes letterSpacing {
     0% {
         letter-spacing: -5px;
@@ -513,11 +522,135 @@
         opacity: 1;
     }
 }
-
 .letter-spacing-anim {
     animation: letterSpacing 1.5s ease-out;
 }
+
+/* Media Queries for Smaller Devices */
 @media (max-width: 768px) {
-    .text-9xl { font-size: 4rem; }
-    .social-media { gap: 30px; }
+    /* Slightly larger logo */
+    .fixed.top-0.left-0 img {
+        height: 48px !important;
+        padding: 4px !important;
+        z-index: 100 !important;
+    }
+    /* Shrink top container padding */
+    .fixed.top-0.left-0 {
+        padding: 8px !important;
+    }
+    /* Ensure top-right buttons are visible */
+    .fixed.top-0.left-0 .button-container {
+        gap: 6px !important;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        z-index: 100 !important;
+    }
+    /* Shrink and ensure top-right buttons are visible */
+    .fixed.top-0.left-0 .btn {
+        padding: 6px 10px !important;
+        font-size: 12px !important;
+        display: inline-block !important;
+    }
+    /* Confirm sidebar on the extreme right */
+    .sidebar {
+        right: 0 !important;
+        transform: translateY(-50%) scale(0.85) !important;
+    }
+    /* Shrink sidebar items */
+    .sidebar-item {
+        font-size: 18px !important;
+        padding: 6px !important;
+    }
+    /* Shrink carousel heading */
+    .carousel-slide h1 {
+        font-size: 2rem !important;
+        margin-bottom: 10px !important;
+    }
+    /* Shrink carousel button */
+    .carousel-slide button {
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+    }
+    /* Shrink carousel container padding */
+    .carousel-slide .absolute.inset-0 {
+        padding-left: 8px !important;
+    }
+    /* Move and shrink social icons under BOOK NOW button */
+    .social-media {
+        display: flex !important;
+        flex-direction: row;
+        justify-content: flex-start !important; /* Align to left under button */
+        gap: 40px !important; /* Reduced gap */
+        margin-top: 16px !important;
+        padding-left: 30px !important; /* Add left padding for alignment */
+    }
+    .social-icon {
+        width: 60px !important; /* Reduced size */
+        height: 60px !important;
+        font-size: 24px !important; /* Reduced font size */
+    }
+}
+
+@media (max-width: 480px) {
+    /* Slightly larger logo for very small screens */
+    .fixed.top-0.left-0 img {
+        height: 40px !important;
+        padding: 2px !important;
+    }
+    /* Shrink top container padding */
+    .fixed.top-0.left-0 {
+        padding: 6px !important;
+    }
+    /* Shrink top-right buttons */
+    .fixed.top-0.left-0 .btn {
+        padding: 4px 8px !important;
+        font-size: 10px !important;
+    }
+    /* Confirm sidebar on the extreme right */
+    .sidebar {
+        right: 0 !important;
+        transform: translateY(-50%) scale(0.75) !important;
+    }
+    /* Shrink sidebar items */
+    .sidebar-item {
+        font-size: 16px !important;
+        padding: 4px !important;
+    }
+    /* Shrink carousel heading */
+    .carousel-slide h1 {
+        font-size: 1.5rem !important;
+    }
+    /* Shrink carousel button */
+    .carousel-slide button {
+        padding: 6px 10px !important;
+        font-size: 10px !important;
+    }
+    /* Shrink carousel container padding */
+    .carousel-slide .absolute.inset-0 {
+        padding-left: 6px !important;
+    }
+    /* Move and shrink social icons under BOOK NOW button */
+    .social-media {
+        display: flex !important;
+        flex-direction: row;
+        justify-content: flex-start !important; /* Align to left under button */
+        gap: 30px !important; /* Further reduced gap */
+        margin-top: 12px !important;
+        padding-left: 20px !important; /* Reduced left padding */
+    }
+    .social-icon {
+        width: 50px !important; /* Further reduced size */
+        height: 50px !important;
+        font-size: 20px !important; /* Further reduced font size */
+    }
+    /* Shrink carousel dots */
+    .carousel-dot {
+        width: 5px !important;
+        height: 5px !important;
+    }
+    /* Shrink carousel dots container */
+    .fixed.bottom-4 {
+        bottom: 8px !important;
+        gap: 4px !important;
+    }
 }
