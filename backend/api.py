@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Query
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
@@ -14,6 +15,15 @@ from backend.services.services import create_booking, send_notification
 init_db()
 
 app = FastAPI(title="My Desire Salon API", version="1.0.0")
+
+# Enable CORS for local file-based frontend and localhost
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Dependency to get DB session
 def get_db():
@@ -145,11 +155,12 @@ from pydantic import BaseModel
 class UserCreate(BaseModel):
     name: str
     email: str
+    phone: str
     password: str
 
 @app.post("/signup")
 def signup_user(user: UserCreate, db: Session = Depends(get_db)):
-    result = signup(db, user.name, user.email, user.password)
+    result = signup(db, user.name, user.email, user.phone, user.password)
     return result
 
 # User login endpoint
@@ -166,7 +177,16 @@ def login_user(user: UserLogin, db: Session = Depends(get_db)):
 @app.get("/attendants/")
 def get_attendants(db: Session = Depends(get_db)):
     attendants = db.query(SalonAttendant).all()
-    return attendants
+    # Serialize attendants to plain dicts to ensure JSON serializable response
+    return [
+        {
+            "id": a.id,
+            "name": a.name,
+            "email": a.email,
+            "created_at": a.created_at,
+        }
+        for a in attendants
+    ]
 
 # Get user by ID
 @app.get("/users/{user_id}")
@@ -205,6 +225,20 @@ def update_user(user_id: int, name: str = None, email: str = None, phone: str = 
         "email": user.email,
         "phone": user.phone,
         "created_at": user.created_at
+    }
+
+# Profile endpoint used by frontend (accepts user_id as query param)
+@app.get("/profile")
+def get_profile(user_id: int = Query(...), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "phone": user.phone,
+        "created_at": user.created_at,
     }
 
 # Create attendant
