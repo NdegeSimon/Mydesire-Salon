@@ -1,10 +1,17 @@
 from datetime import datetime
 import smtplib
 from email.mime.text import MIMEText
-from twilio.rest import Client
-from twilio.base.exceptions import TwilioRestException
 from backend.models import Appointment, User, SalonAttendant
 from backend.database import SessionLocal
+
+# Optional Twilio dependencies: guard imports so code works without twilio installed
+try:
+    from twilio.rest import Client  # type: ignore
+    from twilio.base.exceptions import TwilioRestException  # type: ignore
+except Exception:  # pragma: no cover - optional dependency may not be present
+    Client = None  # type: ignore
+    class TwilioRestException(Exception):  # type: ignore
+        pass
 
 def create_appointment(user_email, salon_attendant_id, service, appointment_time, contact_method=None):
     """
@@ -76,6 +83,9 @@ def send_notification(user, appointment, method="email"):
             return False
     
     elif method == "sms":
+        if Client is None:
+            print("SMS requested but Twilio is not installed; skipping SMS.")
+            return False
         client = Client("your_twilio_sid", "your_twilio_auth_token")  # Replace with credentials
         try:
             message = client.messages.create(
@@ -96,6 +106,9 @@ def send_notification(user, appointment, method="email"):
     
     elif method == "whatsapp":
         # Placeholder for WhatsApp (requires Twilio WhatsApp integration)
+        if Client is None:
+            print("WhatsApp requested but Twilio is not installed; skipping WhatsApp.")
+            return False
         client = Client("your_twilio_sid", "your_twilio_auth_token")  # Replace with credentials
         try:
             message = client.messages.create(
