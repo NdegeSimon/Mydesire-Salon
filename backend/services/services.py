@@ -15,6 +15,9 @@ EMAIL_PORT = 587
 EMAIL_USER = os.getenv("EMAIL_USER", "your_email@gmail.com")  # Replace with actual email
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "your_app_password")  # Replace with actual app password
 
+# Check if email credentials are properly configured
+EMAIL_CONFIGURED = EMAIL_USER != "your_email@gmail.com" and EMAIL_PASSWORD != "your_app_password"
+
 # ✅ Create booking with ORM
 def create_booking(user_id, attendant_id, service, time):
     session = SessionLocal()
@@ -57,14 +60,21 @@ def send_notification(session, user_id, message):
     )
     session.add(notification)
     session.flush()  # Flush to ensure notification is saved
+    print(f"🔔 Notification saved to DB for user {user_id}: {message}")
 
     # Fetch customer info
     user = session.query(User).filter_by(id=user_id).first()
     if user:
         print(f"📧 Sending email to {user.email}: {message}")
         # Send email to user (implementation needed)
-        send_email(user.email, "Appointment Confirmation", message)
+        email_result = send_email(user.email, "Appointment Confirmation", message)
+        if email_result:
+            print(f"✅ Email sent successfully to {user.email}")
+        else:
+            print(f"❌ Failed to send email to {user.email}")
         # if you had phone numbers, same idea for SMS
+    else:
+        print(f"❌ User with ID {user_id} not found")
 
 # ✅ Send notification to admin
 def send_admin_notification(message, appointment, session):
@@ -93,13 +103,18 @@ Booking created at: {appointment.created_at}
         """.strip()
         
         print(f"📧 Sending admin notification to {ADMIN_EMAIL}: {message}")
-        send_email(ADMIN_EMAIL, "New Appointment Booking - My Desire Salon", detailed_message)
+        email_result = send_email(ADMIN_EMAIL, "New Appointment Booking - My Desire Salon", detailed_message)
+        if email_result:
+            print(f"✅ Admin notification email sent successfully to {ADMIN_EMAIL}")
+        else:
+            print(f"❌ Failed to send admin notification email to {ADMIN_EMAIL}")
     except Exception as e:
         print(f"❌ Error sending admin notification: {e}")
 
 # ✅ Send email using SMTP
 def send_email(to_email, subject, message):
     try:
+        print(f"📧 Preparing to send email to {to_email} with subject '{subject}'")
         # Create message
         msg = MIMEMultipart()
         msg['From'] = EMAIL_USER
@@ -110,8 +125,10 @@ def send_email(to_email, subject, message):
         msg.attach(MIMEText(message, 'plain'))
         
         # Create SMTP session
+        print(f"📧 Connecting to SMTP server {EMAIL_HOST}:{EMAIL_PORT}")
         server = smtplib.SMTP(EMAIL_HOST, EMAIL_PORT)
         server.starttls()  # Enable security
+        print(f"📧 Logging in with user {EMAIL_USER}")
         server.login(EMAIL_USER, EMAIL_PASSWORD)
         
         # Send email

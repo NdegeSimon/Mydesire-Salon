@@ -388,14 +388,14 @@
     // Data arrays
     let staffData = [];
     let servicesData = [
-        { id: 1, name: "Haircut & Blow Dry", minPrice: 25, maxPrice: 45, duration: 60 },
-        { id: 2, name: "Hair Coloring", minPrice: 60, maxPrice: 120, duration: 120 },
-        { id: 3, name: "Highlights", minPrice: 80, maxPrice: 150, duration: 150 },
+        { id: 1, name: "Haircut & Blow Dry", minPrice: 50, maxPrice: 100, duration: 30 },
+        { id: 2, name: "Hair Coloring", minPrice: 100, maxPrice: 200, duration: 120 },
+        { id: 3, name: "Highlights", minPrice: 200, maxPrice: 500, duration: 150 },
         { id: 4, name: "Perm", minPrice: 70, maxPrice: 130, duration: 180 },
-        { id: 5, name: "Deep Conditioning Treatment", minPrice: 30, maxPrice: 60, duration: 45 },
-        { id: 6, name: "Bridal Hair Styling", minPrice: 100, maxPrice: 200, duration: 90 },
-        { id: 7, name: "Hair Extensions", minPrice: 150, maxPrice: 300, duration: 180 },
-        { id: 8, name: "Keratin Treatment", minPrice: 120, maxPrice: 250, duration: 210 }
+        { id: 5, name: "Deep Conditioning Treatment", minPrice: 300, maxPrice: 600, duration: 45 },
+        { id: 6, name: "Bridal Hair Styling", minPrice: 2000, maxPrice: 5000, duration: 90 },
+        { id: 7, name: "Hair Extensions", minPrice: 1000, maxPrice: 2000, duration: 180 },
+        { id: 8, name: "Keratin Treatment", minPrice: 1000, maxPrice: 2000, duration: 210 }
     ];
     const timeSlots = [
         "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
@@ -613,92 +613,128 @@
     }
 
     async function bookAppointment() {
-        const name = document.getElementById('customerName').value;
-        const phone = document.getElementById('customerPhone').value;
-        const email = document.getElementById('customerEmail').value || `${name.replace(/\s+/g, '')}@mydesiresalon.com`;
-        const specialRequests = document.getElementById('specialRequests').value;
-        const contactMethod = document.getElementById('contactMethod').value;
-        
-        const errorMessage = document.getElementById('errorMessage');
-        const successMessage = document.getElementById('successMessage');
-        
-        // Hide messages
-        errorMessage.style.display = 'none';
-        successMessage.style.display = 'none';
-
-        if (!name || !phone) {
-            errorMessage.textContent = 'Please fill in your name and phone number';
-            errorMessage.style.display = 'block';
-            return;
-        }
-
-        if (!selectedStaff || !selectedService || !selectedDate || !selectedTime) {
-            errorMessage.textContent = 'Please select a stylist, service, date, and time';
-            errorMessage.style.display = 'block';
-            return;
-        }
-
-        // Format date and time for the API
-        const formattedDate = selectedDate.toISOString().split('T')[0];
-        const formattedTime = selectedTime;
-        
-        // Combine date and time for the appointment
-        const appointmentDateTime = new Date(`${formattedDate}T${formattedTime.replace(' AM', '').replace(' PM', '')}`);
-        
-        // If it's PM and the hour is not 12, add 12 hours
-        if (selectedTime.includes('PM') && !selectedTime.includes('12:')) {
-            appointmentDateTime.setHours(appointmentDateTime.getHours() + 12);
-        }
-        
-        // If it's 12 AM, set hours to 0
-        if (selectedTime.includes('AM') && selectedTime.includes('12:')) {
-            appointmentDateTime.setHours(0);
-        }
-
-        const appointmentData = {
-            service: selectedService.name,
-            user_id: parseInt(currentUserId),
-            attendant_id: selectedStaff.id,
-            scheduled_time: appointmentDateTime.toISOString()
-        };
-
         try {
-            const response = await fetch(`${API_BASE_URL}/appointments/`, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(appointmentData)
-            });
-
-            const result = await response.json();
+            console.log('Starting appointment booking process');
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            const email = document.getElementById('customerEmail').value || `${name.replace(/\s+/g, '')}@mydesiresalon.com`;
+            const specialRequests = document.getElementById('specialRequests').value;
+            const contactMethod = document.getElementById('contactMethod').value;
             
-            if (response.ok) {
-                successMessage.textContent = `Booking confirmed! You'll receive a confirmation via ${contactMethod} within 30 minutes.`;
-                successMessage.style.display = 'block';
-                
-                // Reset form and selections
-                document.getElementById('specialRequests').value = '';
-                document.querySelectorAll('.staff-card.selected').forEach(card => card.classList.remove('selected'));
-                document.querySelectorAll('.service-item.selected').forEach(item => item.classList.remove('selected'));
-                document.querySelectorAll('.calendar-day.selected').forEach(day => day.classList.remove('selected'));
-                document.querySelectorAll('.time-slot.selected').forEach(slot => slot.classList.remove('selected'));
-                selectedStaff = null;
-                selectedService = null;
-                selectedDate = null;
-                selectedTime = null;
-                updateSummary();
-                
-                // Reload user profile to ensure data is current
-                loadUserProfile();
-            } else {
-                errorMessage.textContent = result.detail || 'Failed to book appointment';
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Hide messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            console.log('Form data:', { name, phone, email, specialRequests, contactMethod });
+
+            if (!name || !phone) {
+                console.log('Validation failed: name or phone missing');
+                errorMessage.textContent = 'Please fill in your name and phone number';
                 errorMessage.style.display = 'block';
+                return;
+            }
+
+            if (!selectedStaff || !selectedService || !selectedDate || !selectedTime) {
+                console.log('Validation failed: selections missing');
+                errorMessage.textContent = 'Please select a stylist, service, date, and time';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Format date and time for the API
+            const formattedDate = selectedDate.toISOString().split('T')[0];
+            let formattedTime = selectedTime;
+            
+            // Parse time properly
+            let hours, minutes;
+            if (formattedTime.includes('AM')) {
+                const timePart = formattedTime.replace(' AM', '');
+                [hours, minutes] = timePart.split(':').map(Number);
+                // Convert 12 AM to 0 hours
+                if (hours === 12) hours = 0;
+            } else if (formattedTime.includes('PM')) {
+                const timePart = formattedTime.replace(' PM', '');
+                [hours, minutes] = timePart.split(':').map(Number);
+                // Add 12 hours for PM (except 12 PM)
+                if (hours !== 12) hours += 12;
+            } else {
+                // 24-hour format
+                [hours, minutes] = formattedTime.split(':').map(Number);
+            }
+            
+            // Format hours and minutes with leading zeros
+            const formattedHours = hours.toString().padStart(2, '0');
+            const formattedMinutes = minutes.toString().padStart(2, '0');
+            
+            // Combine date and time for the appointment
+            const appointmentDateTime = new Date(`${formattedDate}T${formattedHours}:${formattedMinutes}:00`);
+            console.log('Formatted appointment date/time:', appointmentDateTime);
+
+            const appointmentData = {
+                service: selectedService.name,
+                user_id: parseInt(currentUserId),
+                attendant_id: selectedStaff.id,
+                scheduled_time: appointmentDateTime.toISOString()
+            };
+            
+            console.log('Sending appointment data:', appointmentData);
+
+            try {
+                console.log('Making API call to:', `${API_BASE_URL}/appointments/`);
+                const response = await fetch(`${API_BASE_URL}/appointments/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(appointmentData)
+                });
+                console.log('API response status:', response.status);
+                console.log('API response headers:', response.headers);
+
+                const result = await response.json();
+                console.log('API response data:', result);
+                
+                if (response.ok) {
+                    console.log('Booking successful');
+                    successMessage.textContent = `Booking confirmed! You'll receive a confirmation via ${contactMethod} within 30 minutes.`;
+                    successMessage.style.display = 'block';
+                    console.log('Success message displayed');
+                    
+                    // Reset form and selections
+                    document.getElementById('specialRequests').value = '';
+                    document.querySelectorAll('.staff-card.selected').forEach(card => card.classList.remove('selected'));
+                    document.querySelectorAll('.service-item.selected').forEach(item => item.classList.remove('selected'));
+                    document.querySelectorAll('.calendar-day.selected').forEach(day => day.classList.remove('selected'));
+                    document.querySelectorAll('.time-slot.selected').forEach(slot => slot.classList.remove('selected'));
+                    selectedStaff = null;
+                    selectedService = null;
+                    selectedDate = null;
+                    selectedTime = null;
+                    updateSummary();
+                    
+                    // Reload user profile to ensure data is current
+                    loadUserProfile();
+                } else {
+                    console.log('Booking failed with status:', response.status);
+                    errorMessage.textContent = result.detail || 'Failed to book appointment';
+                    errorMessage.style.display = 'block';
+                    console.log('Error message displayed');
+                }
+            } catch (fetchError) {
+                console.error('Error making API call:', fetchError);
+                errorMessage.textContent = 'Unable to connect to the server. Please check your internet connection and try again.';
+                errorMessage.style.display = 'block';
+                console.log('Connection error message displayed');
             }
         } catch (error) {
-            console.error('Error booking appointment:', error);
-            errorMessage.textContent = 'An error occurred while booking your appointment. Please try again.';
+            console.error('Unexpected error in bookAppointment:', error);
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = 'An unexpected error occurred. Please try again.';
             errorMessage.style.display = 'block';
+            console.log('Unexpected error message displayed');
         }
     }
 </script>

@@ -104,6 +104,7 @@ def create_appointment(appointment: AppointmentCreate, db: Session = Depends(get
     send_notification(db, appointment.user_id, message)
     
     # Send notification to admin
+    admin_email = "harrisonodongo@gmail.com"
     send_admin_notification("New appointment booked", db_appointment, db)
     
     # Map model fields to schema fields
