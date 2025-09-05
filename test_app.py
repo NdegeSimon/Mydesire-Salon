@@ -59,7 +59,7 @@ def test_user_signup():
         from backend.models import User
         
         # Test signup with a new user
-        result = User.signup("Test User 2", "test2@example.com", "1234567891", "testpassword")
+        result = User.signup("Test User 3", "test3@example.com", "1234567892", "testpassword")
         if result:
             print("✓ User signup successful")
             return True
@@ -77,7 +77,7 @@ def test_user_login():
         from backend.models import User
         
         # Test login with the test user
-        result = User.find_by_email("test2@example.com")
+        result = User.find_by_email("test3@example.com")
         if result:
             login_result = result.check_password("testpassword")
             if login_result:
@@ -103,7 +103,7 @@ def test_create_appointment():
         # Create a test appointment
         appointment_time = datetime.now().replace(hour=15, minute=0, second=0, microsecond=0)
         result = create_appointment(
-            "test2@example.com",
+            "test3@example.com",
             1,  # Assuming attendant ID 1 exists
             "Haircut",
             appointment_time

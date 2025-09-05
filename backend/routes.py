@@ -1,12 +1,12 @@
 from sqlalchemy.orm import Session
 from backend.models import User
-
-def signup(session: Session, name: str, email: str, password: str):
+def signup(session: Session, name: str, email: str, phone: str, password: str):
     """
     Signup function using pure SQLAlchemy ORM (no Flask).
     session: SQLAlchemy Session object
-    name, email, password: User details
+    name, email, phone, password: User details
     """
+
 
     # 1. Check if user exists
     existing_user = session.query(User).filter(
@@ -17,7 +17,7 @@ def signup(session: Session, name: str, email: str, password: str):
         return {"error": "Name or email already exists"}
 
     # 2. Create new user
-    new_user = User(name=name, email=email)
+    new_user = User(name=name, email=email, phone=phone)
     new_user.set_password(password)  # assumes User has a set_password method
 
     # 3. Save to DB

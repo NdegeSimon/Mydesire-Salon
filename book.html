@@ -429,8 +429,10 @@
 
     // Load user profile to prefill form
     async function loadUserProfile() {
+        if (!currentUserId) return;
+        
         try {
-            const response = await fetch(`${API_BASE_URL}/profile?user_id=${currentUserId}`);
+            const response = await fetch(`${API_BASE_URL}/users/${currentUserId}`);
             if (response.ok) {
                 const userData = await response.json();
                 document.getElementById('customerName').value = userData.name || '';

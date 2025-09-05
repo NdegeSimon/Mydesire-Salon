@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
@@ -14,6 +15,15 @@ from backend.services.services import create_booking, send_notification
 init_db()
 
 app = FastAPI(title="My Desire Salon API", version="1.0.0")
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, replace with specific origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Dependency to get DB session
 def get_db():
@@ -145,12 +155,13 @@ from pydantic import BaseModel
 class UserCreate(BaseModel):
     name: str
     email: str
+    phone: str
     password: str
-
 @app.post("/signup")
 def signup_user(user: UserCreate, db: Session = Depends(get_db)):
-    result = signup(db, user.name, user.email, user.password)
+    result = signup(db, user.name, user.email, user.phone, user.password)
     return result
+
 
 # User login endpoint
 class UserLogin(BaseModel):
