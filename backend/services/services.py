@@ -1,7 +1,19 @@
 from datetime import datetime
 from backend.database import SessionLocal
 from backend.models import User, SalonAttendant, Appointment, Notification
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import os
 
+# Admin email (can be moved to environment variables)
+ADMIN_EMAIL = "harrisonodongo@gmail.com"
+
+# Email configuration (should be moved to environment variables in production)
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USER = os.getenv("EMAIL_USER", "your_email@gmail.com")  # Replace with actual email
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "your_app_password")  # Replace with actual app password
 
 # ✅ Create booking with ORM
 def create_booking(user_id, attendant_id, service, time):
@@ -21,6 +33,10 @@ def create_booking(user_id, attendant_id, service, time):
         # Send notification after booking
         message = f"Your booking for {service} with attendant {attendant_id} is confirmed for {time}."
         send_notification(session, user_id, message)
+        
+        # Send notification to admin
+        admin_message = f"New booking: {service} for {time} by user {user_id}."
+        send_admin_notification(admin_message, appointment, session)
 
         session.commit()
         print("✅ Booking created successfully!")
@@ -46,4 +62,65 @@ def send_notification(session, user_id, message):
     user = session.query(User).filter_by(id=user_id).first()
     if user:
         print(f"📧 Sending email to {user.email}: {message}")
+        # Send email to user (implementation needed)
+        send_email(user.email, "Appointment Confirmation", message)
         # if you had phone numbers, same idea for SMS
+
+# ✅ Send notification to admin
+def send_admin_notification(message, appointment, session):
+    try:
+        # Get user and attendant details
+        user = session.query(User).filter_by(id=appointment.user_id).first()
+        attendant = session.query(SalonAttendant).filter_by(id=appointment.salon_attendant_id).first()
+        
+        # Create detailed message
+        detailed_message = f"""
+New Appointment Booking
+=======================
+
+Service: {appointment.service}
+Date & Time: {appointment.appointment_time}
+Status: {appointment.status}
+
+User Details:
+Name: {user.name if user else 'Unknown'}
+Email: {user.email if user else 'Unknown'}
+Phone: {user.phone if user else 'Unknown'}
+
+Attendant: {attendant.name if attendant else 'Unknown'}
+
+Booking created at: {appointment.created_at}
+        """.strip()
+        
+        print(f"📧 Sending admin notification to {ADMIN_EMAIL}: {message}")
+        send_email(ADMIN_EMAIL, "New Appointment Booking - My Desire Salon", detailed_message)
+    except Exception as e:
+        print(f"❌ Error sending admin notification: {e}")
+
+# ✅ Send email using SMTP
+def send_email(to_email, subject, message):
+    try:
+        # Create message
+        msg = MIMEMultipart()
+        msg['From'] = EMAIL_USER
+        msg['To'] = to_email
+        msg['Subject'] = subject
+        
+        # Add body to email
+        msg.attach(MIMEText(message, 'plain'))
+        
+        # Create SMTP session
+        server = smtplib.SMTP(EMAIL_HOST, EMAIL_PORT)
+        server.starttls()  # Enable security
+        server.login(EMAIL_USER, EMAIL_PASSWORD)
+        
+        # Send email
+        text = msg.as_string()
+        server.sendmail(EMAIL_USER, to_email, text)
+        server.quit()
+        
+        print(f"✅ Email sent successfully to {to_email}")
+        return True
+    except Exception as e:
+        print(f"❌ Error sending email to {to_email}: {e}")
+        return False

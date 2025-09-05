@@ -9,7 +9,7 @@ from backend.database import SessionLocal, init_db
 from backend.models import User, SalonAttendant, Appointment
 from backend.schemas import AppointmentCreate, AppointmentResponse, AppointmentUpdate
 from backend.routes import signup, login
-from backend.services.services import create_booking, send_notification
+from backend.services.services import create_booking, send_notification, send_admin_notification
 
 # Initialize the database
 init_db()
@@ -99,9 +99,12 @@ def create_appointment(appointment: AppointmentCreate, db: Session = Depends(get
     db.commit()
     db.refresh(db_appointment)
     
-    # Send notification
+    # Send notification to user
     message = f"Your booking for {appointment.service} is confirmed for {appointment.scheduled_time}."
     send_notification(db, appointment.user_id, message)
+    
+    # Send notification to admin
+    send_admin_notification("New appointment booked", db_appointment, db)
     
     # Map model fields to schema fields
     return {
