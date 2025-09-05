@@ -109,6 +109,22 @@
             margin-bottom: 20px;
             animation: spin 4s linear infinite;
         }
+        .error-message {
+            color: #ff0000;
+            background-color: rgba(255, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .success-message {
+            color: #00aa00;
+            background-color: rgba(0, 170, 0, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -144,15 +160,68 @@
     <div class="form-container">
         <i class="fas fa-spa salon-icon"></i>
         <h1>Log In</h1>
-        <form action="" method="POST">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" placeholder="Enter your name" required>
-
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        <form id="loginForm">
+            <label for="identifier">Name or Email</label>
+            <input type="text" id="identifier" name="identifier" placeholder="Enter your name or email" required>
+            
             <label for="password">Password</label>
             <input type="password" id="password" name="password" placeholder="Enter your password" required>
-
-            <button type="submit">Submit</button>
+            
+            <button type="submit">Log In</button>
         </form>
+        <p>Don't have an account? <a href="Signup.html">Sign Up</a></p>
     </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const identifier = document.getElementById('identifier').value;
+            const password = document.getElementById('password').value;
+            
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Hide messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            try {
+                const response = await fetch('http://localhost:8000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        identifier: identifier,
+                        password: password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    successMessage.textContent = result.message;
+                    successMessage.style.display = 'block';
+                    
+                    // Store user ID in localStorage for future use
+                    localStorage.setItem('userId', result.user_id);
+                    
+                    // Redirect to booking page after successful login
+                    setTimeout(() => {
+                        window.location.href = 'book.html';
+                    }, 1000);
+                } else {
+                    errorMessage.textContent = result.error || 'Login failed';
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>

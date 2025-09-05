@@ -6,9 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # Set up SQLAlchemy
 Base = declarative_base()
-engine = create_engine('sqlite:///users.db', echo=True)  # Replace with your DB URL
-Session = sessionmaker(bind=engine)
-session = Session()
 
 class User(Base):
     __tablename__ = 'users'
@@ -43,30 +40,49 @@ class User(Base):
     @classmethod
     def find_by_email(cls, email):
         """Find a user by email."""
-        return session.query(cls).filter_by(email=email).first()
+        from backend.database import SessionLocal
+        session = SessionLocal()
+        try:
+            return session.query(cls).filter_by(email=email).first()
+        finally:
+            session.close()
 
     @classmethod
     def signup(cls, name, email, phone, password):
         """Handle user signup."""
-        if cls.find_by_email(email):
-            print("Email already registered!")
+        from backend.database import SessionLocal
+        session = SessionLocal()
+        try:
+            if cls.find_by_email(email):
+                print("Email already registered!")
+                return False
+            
+            new_user = cls(name, email, phone, password)
+            session.add(new_user)
+            session.commit()
+            print(f"User {name} signed up successfully!")
+            return True
+        except Exception as e:
+            session.rollback()
+            print(f"Error during signup: {e}")
             return False
-        
-        new_user = cls(name, email, phone, password)
-        session.add(new_user)
-        session.commit()
-        print(f"User {name} signed up successfully!")
-        return True
+        finally:
+            session.close()
 
 def login(email, password):
     """Handle user login."""
-    user = User.find_by_email(email)
-    if user and user.check_password(password):
-        print(f"Login successful for {user.name}!")
-        return True
-    else:
-        print("Invalid email or password!")
-        return False
+    from backend.database import SessionLocal
+    session = SessionLocal()
+    try:
+        user = session.query(User).filter_by(email=email).first()
+        if user and user.check_password(password):
+            print(f"Login successful for {user.name}!")
+            return True
+        else:
+            print("Invalid email or password!")
+            return False
+    finally:
+        session.close()
 
 class Appointment(Base):
     __tablename__ = 'appointments'
@@ -127,6 +143,5 @@ class Reviews(Base):
     user = relationship("User", back_populates="reviews")
     appointment = relationship("Appointment", back_populates="reviews")
     salon_attendant = relationship("SalonAttendant", back_populates="reviews")
-
 # Create the database tables
-Base.metadata.create_all(engine)
+# This will be called from database.py instead

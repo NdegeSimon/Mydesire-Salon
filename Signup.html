@@ -146,6 +146,22 @@
             margin-bottom: 20px;
             animation: spin 4s linear infinite;
         }
+        .error-message {
+            color: #ff0000;
+            background-color: rgba(255, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .success-message {
+            color: #00aa00;
+            background-color: rgba(0, 170, 0, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -185,27 +201,91 @@
         <i class="fas fa-spa salon-icon"></i>
         <h1>Sign Up</h1>
         <h2>My Desire Salon</h2>
-        <form action="signup_process.php" method="POST">
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        <form id="signupForm">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
-
+            
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
-
+            
             <label for="phone">Phone:</label>
             <input type="text" id="phone" name="phone" required>
-
+            
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-
+            
             <div class="terms">
                 <input type="checkbox" id="terms" name="terms" required>
                 <label for="terms">I agree to the terms and conditions</label>
             </div>
-
+            
             <button type="submit">Sign Up</button>
             <p>Already have an account? <a href="login.html">Log In</a></p>
         </form>
     </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Check if terms are accepted
+            if (!document.getElementById('terms').checked) {
+                const errorMessage = document.getElementById('errorMessage');
+                errorMessage.textContent = 'Please accept the terms and conditions';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Hide messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            try {
+                // First, create user via API
+                const response = await fetch('http://localhost:8000/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    successMessage.textContent = result.message;
+                    successMessage.style.display = 'block';
+                    
+                    // Store user ID in localStorage for future use
+                    localStorage.setItem('userId', result.user_id);
+                    
+                    // Redirect to login page after successful signup
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    errorMessage.textContent = result.error || 'Signup failed';
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>

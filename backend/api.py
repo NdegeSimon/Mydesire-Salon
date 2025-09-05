@@ -168,6 +168,45 @@ def get_attendants(db: Session = Depends(get_db)):
     attendants = db.query(SalonAttendant).all()
     return attendants
 
+# Get user by ID
+@app.get("/users/{user_id}")
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "phone": user.phone,
+        "created_at": user.created_at
+    }
+
+# Update user
+@app.put("/users/{user_id}")
+def update_user(user_id: int, name: str = None, email: str = None, phone: str = None, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if name:
+        user.name = name
+    if email:
+        user.email = email
+    if phone:
+        user.phone = phone
+    
+    db.commit()
+    db.refresh(user)
+    
+    return {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "phone": user.phone,
+        "created_at": user.created_at
+    }
+
 # Create attendant
 @app.post("/attendants/")
 def create_attendant(name: str, email: str, db: Session = Depends(get_db)):

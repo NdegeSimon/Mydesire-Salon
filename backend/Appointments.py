@@ -3,7 +3,8 @@ import smtplib
 from email.mime.text import MIMEText
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
-from models import Appointment, User, SalonAttendant, session  # Import models and session
+from backend.models import Appointment, User, SalonAttendant
+from backend.database import SessionLocal
 
 def create_appointment(user_email, salon_attendant_id, service, appointment_time, contact_method=None):
     """
@@ -19,25 +20,29 @@ def create_appointment(user_email, salon_attendant_id, service, appointment_time
     Returns:
         Appointment: The created appointment object, or a string message if failed.
     """
-    user = session.query(User).filter_by(email=user_email).first()
-    if not user:
-        return "Please log in to make an appointment."
-    
-    if not session.query(SalonAttendant).filter_by(id=salon_attendant_id).first():
-        return "Salon attendant not found."
-    
-    new_appointment = Appointment(
-        user_id=user.id,
-        salon_attendant_id=salon_attendant_id,
-        service=service,
-        appointment_time=appointment_time,
-        status="pending"
-    )
-    session.add(new_appointment)
-    session.commit()
-    print(f"Appointment created for {user.name} at {appointment_time}")
-    send_notification(user, new_appointment, method=contact_method or "email")
-    return new_appointment
+    session = SessionLocal()
+    try:
+        user = session.query(User).filter_by(email=user_email).first()
+        if not user:
+            return "Please log in to make an appointment."
+        
+        if not session.query(SalonAttendant).filter_by(id=salon_attendant_id).first():
+            return "Salon attendant not found."
+        
+        new_appointment = Appointment(
+            user_id=user.id,
+            salon_attendant_id=salon_attendant_id,
+            service=service,
+            appointment_time=appointment_time,
+            status="pending"
+        )
+        session.add(new_appointment)
+        session.commit()
+        print(f"Appointment created for {user.name} at {appointment_time}")
+        send_notification(user, new_appointment, method=contact_method or "email")
+        return new_appointment
+    finally:
+        session.close()
 
 def send_notification(user, appointment, method="email"):
     """
@@ -118,19 +123,23 @@ def update_appointment_status(appointment_id, new_status):
     Returns:
         bool: True if successful, False otherwise.
     """
-    appointment = session.query(Appointment).filter_by(id=appointment_id).first()
-    if not appointment:
-        print("Appointment not found!")
-        return False
-    
-    appointment.status = new_status
-    session.commit()
-    print(f"Appointment {appointment_id} status updated to {new_status}")
-    
-    user = session.query(User).filter_by(id=appointment.user_id).first()
-    if user:
-        send_notification(user, appointment, method="email")  # Default to email, adjust as needed
-    return True
+    session = SessionLocal()
+    try:
+        appointment = session.query(Appointment).filter_by(id=appointment_id).first()
+        if not appointment:
+            print("Appointment not found!")
+            return False
+        
+        appointment.status = new_status
+        session.commit()
+        print(f"Appointment {appointment_id} status updated to {new_status}")
+        
+        user = session.query(User).filter_by(id=appointment.user_id).first()
+        if user:
+            send_notification(user, appointment, method="email")  # Default to email, adjust as needed
+        return True
+    finally:
+        session.close()
 
 def get_user_appointments(user_email):
     """
@@ -142,9 +151,15 @@ def get_user_appointments(user_email):
     Returns:
         list: List of Appointment objects.
     """
-    user = session.query(User).filter_by(email=user_email).first()
-    if not user:
-        print("User not found!")
-        return []
-    
-    return user.appointments
+    session = SessionLocal()
+    try:
+        user = session.query(User).filter_by(email=user_email).first()
+        if not user:
+            print("User not found!")
+            return []
+        
+        # Eager load appointments
+        session.refresh(user)
+        return user.appointments
+    finally:
+        session.close()
