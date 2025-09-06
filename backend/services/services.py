@@ -13,7 +13,7 @@ ADMIN_EMAIL = "harrisonodongo@gmail.com"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USER = os.getenv("EMAIL_USER", "your_email@gmail.com")  # Replace with actual email
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "your_app_password")  # Replace with actual app password
+EMAIL_PASSWORD = os.getenv("simopetley@gmail.com", "petley254")  # Replace with actual app password
 
 # Check if email credentials are properly configured
 EMAIL_CONFIGURED = EMAIL_USER != "your_email@gmail.com" and EMAIL_PASSWORD != "your_app_password"
@@ -51,34 +51,58 @@ def create_booking(user_id, attendant_id, service, time):
 
 
 # ✅ Send notification with ORM
-def send_notification(session, user_id, message):
-    # Save notification in DB
-    notification = Notification(
-        user_id=user_id,
-        message=message,
-        is_read=False
-    )
-    session.add(notification)
-    session.flush()  # Flush to ensure notification is saved
-    print(f"🔔 Notification saved to DB for user {user_id}: {message}")
-
-    # Fetch customer info
-    user = session.query(User).filter_by(id=user_id).first()
-    if user:
-        print(f"📧 Sending email to {user.email}: {message}")
-        # Send email to user (implementation needed)
-        email_result = send_email(user.email, "Appointment Confirmation", message)
-        if email_result:
-            print(f"✅ Email sent successfully to {user.email}")
+def send_notification(session=None, user_id=None, message=None):
+    # If no session is provided, create a new one
+    local_session = session is None
+    if local_session:
+        from backend.database import SessionLocal
+        session = SessionLocal()
+    
+    try:
+        # Save notification in DB
+        notification = Notification(
+            user_id=user_id,
+            message=message,
+            is_read=False
+        )
+        session.add(notification)
+        session.flush()  # Flush to ensure notification is saved
+        print(f"🔔 Notification saved to DB for user {user_id}: {message}")
+        
+        # Commit the session if we created it locally
+        if local_session:
+            session.commit()
+        
+        # Fetch customer info
+        user = session.query(User).filter_by(id=user_id).first()
+        if user:
+            print(f"📧 Sending email to {user.email}: {message}")
+            # Send email to user (implementation needed)
+            email_result = send_email(user.email, "Appointment Confirmation", message)
+            if email_result:
+                print(f"✅ Email sent successfully to {user.email}")
+            else:
+                print(f"❌ Failed to send email to {user.email}")
+            # if you had phone numbers, same idea for SMS
         else:
-            print(f"❌ Failed to send email to {user.email}")
-        # if you had phone numbers, same idea for SMS
-    else:
-        print(f"❌ User with ID {user_id} not found")
+            print(f"❌ User with ID {user_id} not found")
+    except Exception as e:
+        print(f"❌ Error sending notification: {e}")
+        if local_session:
+            session.rollback()
+    finally:
+        if local_session:
+            session.close()
 
 # ✅ Send notification to admin
-def send_admin_notification(message, appointment, session):
+def send_admin_notification(message, appointment, session=None):
     try:
+        # If no session is provided, create a new one
+        local_session = session is None
+        if local_session:
+            from backend.database import SessionLocal
+            session = SessionLocal()
+        
         # Get user and attendant details
         user = session.query(User).filter_by(id=appointment.user_id).first()
         attendant = session.query(SalonAttendant).filter_by(id=appointment.salon_attendant_id).first()
@@ -108,6 +132,10 @@ Booking created at: {appointment.created_at}
             print(f"✅ Admin notification email sent successfully to {ADMIN_EMAIL}")
         else:
             print(f"❌ Failed to send admin notification email to {ADMIN_EMAIL}")
+            
+        # Close the session if we created it locally
+        if local_session:
+            session.close()
     except Exception as e:
         print(f"❌ Error sending admin notification: {e}")
 
