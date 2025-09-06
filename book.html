@@ -156,6 +156,27 @@
             display: none;
         }
         
+        /* Notification Styles */
+        .notification-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+            transition: background-color 0.2s;
+        }
+        
+        .notification-item:hover {
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+        
+        .notification-item.unread {
+            background-color: rgba(255, 0, 0, 0.05);
+        }
+        
+        .notification-time {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+        
         @media (max-width: 768px) {
           .sidebar {
             position: fixed;
@@ -201,8 +222,25 @@
 <body class="text-white min-h-screen">
     <!-- Header with Logo -->
     <div class="fixed top-0 left-0 p-8 z-50">
-        <div>
+        <div class="flex items-center">
             <img src="images/lg.png" alt="My Desire Salon" class="h-16 brightness-0 invert cursor-pointer" onclick="window.location.href='index.html'">
+            <!-- Notification Bell Icon -->
+            <div class="relative ml-4">
+                <button id="notificationBell" class="text-white hover:text-red-500 focus:outline-none">
+                    <i class="fas fa-bell text-2xl"></i>
+                    <span id="notificationCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                </button>
+                <!-- Notification Dropdown -->
+                <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-gray-800 rounded-lg shadow-lg z-50 hidden">
+                    <div class="p-4 border-b border-gray-700">
+                        <h3 class="text-lg font-semibold">Notifications</h3>
+                    </div>
+                    <div id="notificationList" class="max-h-96 overflow-y-auto">
+                        <!-- Notifications will be populated by JavaScript -->
+                        <div class="p-4 text-center text-gray-400">No notifications</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
       <div class="sidebar">
@@ -737,4 +775,124 @@
             console.log('Unexpected error message displayed');
         }
     }
+    
+    // Fetch notifications from API
+    async function fetchNotifications() {
+        if (!currentUserId) return;
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/users/${currentUserId}/notifications`);
+            if (response.ok) {
+                const notifications = await response.json();
+                displayNotifications(notifications);
+                return notifications.length;
+            }
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
+        return 0;
+    }
+    
+    // Display notifications in the dropdown
+    function displayNotifications(notifications) {
+        const notificationList = document.getElementById('notificationList');
+        const notificationCount = document.getElementById('notificationCount');
+        
+        if (!notifications || notifications.length === 0) {
+            notificationList.innerHTML = '<div class="p-4 text-center text-gray-400">No notifications</div>';
+            notificationCount.classList.add('hidden');
+            return;
+        }
+        
+        // Show notification count
+        const unreadCount = notifications.filter(n => !n.is_read).length;
+        if (unreadCount > 0) {
+            notificationCount.textContent = unreadCount;
+            notificationCount.classList.remove('hidden');
+        } else {
+            notificationCount.classList.add('hidden');
+        }
+        
+        // Clear existing notifications
+        notificationList.innerHTML = '';
+        
+        // Add notifications to the list
+        notifications.forEach(notification => {
+            const notificationElement = document.createElement('div');
+            notificationElement.className = `notification-item ${!notification.is_read ? 'unread' : ''}`;
+            
+            // Format the date
+            const date = new Date(notification.created_at);
+            const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateString = date.toLocaleDateString();
+            
+            notificationElement.innerHTML = `
+                <div class="notification-message">${notification.message}</div>
+                <div class="notification-time">${dateString} at ${timeString}</div>
+            `;
+            
+            notificationList.appendChild(notificationElement);
+        });
+    }
+    
+    // Toggle notification dropdown
+    function toggleNotificationDropdown() {
+        const dropdown = document.getElementById('notificationDropdown');
+        dropdown.classList.toggle('hidden');
+        
+        // If opening the dropdown, mark notifications as read
+        if (!dropdown.classList.contains('hidden')) {
+            // Here you could add code to mark notifications as read
+            // For now, we'll just hide the notification count
+            document.getElementById('notificationCount').classList.add('hidden');
+        }
+    }
+    
+    // Close notification dropdown when clicking outside
+    function closeNotificationDropdown(event) {
+        const dropdown = document.getElementById('notificationDropdown');
+        const bellButton = document.getElementById('notificationBell');
+        
+        if (!dropdown.classList.contains('hidden') &&
+            !dropdown.contains(event.target) &&
+            !bellButton.contains(event.target)) {
+            dropdown.classList.add('hidden');
+        }
+    }
+    
+    // Initialize notification system
+    function initNotifications() {
+        // Add event listener to notification bell
+        document.getElementById('notificationBell').addEventListener('click', toggleNotificationDropdown);
+        
+        // Add event listener to close dropdown when clicking outside
+        document.addEventListener('click', closeNotificationDropdown);
+        
+        // Fetch notifications initially
+        fetchNotifications();
+        
+        // Set up periodic notification checking (every 30 seconds)
+        setInterval(fetchNotifications, 30000);
+    }
+    
+    // Modify the DOMContentLoaded event listener to initialize notifications
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is logged in
+        currentUserId = localStorage.getItem('userId');
+        if (!currentUserId) {
+            // Redirect to login if not logged in
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        fetchStaff();
+        populateServices();
+        populateCalendar();
+        populateTimeSlots();
+        setupEventListeners();
+        loadUserProfile();
+        
+        // Initialize notifications
+        initNotifications();
+    });
 </script>

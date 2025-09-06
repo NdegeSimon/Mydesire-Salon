@@ -141,3 +141,20 @@ def send_email(to_email, subject, message):
     except Exception as e:
         print(f"❌ Error sending email to {to_email}: {e}")
         return False
+
+# ✅ Get notifications for user
+def get_user_notifications(session, user_id):
+    try:
+        notifications = session.query(Notification).filter_by(user_id=user_id).order_by(Notification.created_at.desc()).all()
+        return [
+            {
+                "id": notification.id,
+                "message": notification.message,
+                "is_read": notification.is_read,
+                "created_at": notification.created_at.isoformat() if notification.created_at else None
+            }
+            for notification in notifications
+        ]
+    except Exception as e:
+        print(f"❌ Error retrieving notifications for user {user_id}: {e}")
+        return []

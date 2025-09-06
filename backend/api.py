@@ -9,7 +9,7 @@ from backend.database import SessionLocal, init_db
 from backend.models import User, SalonAttendant, Appointment
 from backend.schemas import AppointmentCreate, AppointmentResponse, AppointmentUpdate
 from backend.routes import signup, login
-from backend.services.services import create_booking, send_notification, send_admin_notification
+from backend.services.services import create_booking, send_notification, send_admin_notification, get_user_notifications
 
 # Initialize the database
 init_db()
@@ -196,6 +196,18 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
         "phone": user.phone,
         "created_at": user.created_at
     }
+
+# Get user notifications
+@app.get("/users/{user_id}/notifications")
+def get_user_notifications_endpoint(user_id: int, db: Session = Depends(get_db)):
+    from backend.services.services import get_user_notifications
+    # Check if user exists
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    notifications = get_user_notifications(db, user_id)
+    return notifications
 
 # Update user
 @app.put("/users/{user_id}")
