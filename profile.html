@@ -32,7 +32,7 @@
             box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
             transform: translateY(-2px);
         }
-        
+
         .error-message {
             color: #ff0000;
             background-color: rgba(255, 0, 0, 0.1);
@@ -41,7 +41,7 @@
             margin-bottom: 15px;
             display: none;
         }
-        
+
         .success-message {
             color: #00aa00;
             background-color: rgba(0, 170, 0, 0.1);
@@ -49,6 +49,31 @@
             border-radius: 5px;
             margin-bottom: 15px;
             display: none;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff0000;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
     </style>
 </head>
@@ -77,11 +102,11 @@
                     <span class="text-primary">YOUR</span><br>
                     <span class="text-white">PROFILE</span>
                 </h1>
-                <p class="text-xl text-gray-300">Manage your personal information</p>
+                <p class="text-xl text-gray-300">Manage your personal information and view your appointments</p>
             </div>
 
             <!-- Profile Form -->
-            <div class="profile-card p-6">
+            <div class="profile-card p-6 mb-8">
                 <h2 class="text-2xl font-bold mb-6 text-primary">Personal Details</h2>
                 <div id="errorMessage" class="error-message"></div>
                 <div id="successMessage" class="success-message"></div>
@@ -107,6 +132,44 @@
                     </div>
                 </form>
             </div>
+
+            <!-- Appointments Section -->
+            <div class="profile-card p-6 mb-8">
+                <h2 class="text-2xl font-bold mb-6 text-primary">Your Appointments</h2>
+                <div id="appointmentsError" class="error-message"></div>
+                <div class="table-container">
+                    <table id="appointmentsTable">
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Attendant</th>
+                                <th>Booked At</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Notifications Section -->
+            <div class="profile-card p-6">
+                <h2 class="text-2xl font-bold mb-6 text-primary">Your Notifications</h2>
+                <div id="notificationsError" class="error-message"></div>
+                <div class="table-container">
+                    <table id="notificationsTable">
+                        <thead>
+                            <tr>
+                                <th>Message</th>
+                                <th>Status</th>
+                                <th>Received At</th>
+                            </tr>
+                        </thead>
+                        <tbody id="notificationsBody"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -116,24 +179,24 @@
         // API base URL
         const API_BASE_URL = 'http://localhost:8000';
 
-        // Load user profile on page load
+        // Load user profile, appointments, and notifications on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is logged in
             const userId = localStorage.getItem('userId');
             if (!userId) {
-                // Redirect to login if not logged in
                 window.location.href = 'login.html';
                 return;
             }
-            
+
             loadProfile();
+            loadAppointments();
+            loadNotifications();
             setupEventListeners();
         });
 
         // Function to load user profile
         async function loadProfile() {
             const userId = localStorage.getItem('userId');
-            
             if (!userId) {
                 window.location.href = 'login.html';
                 return;
@@ -150,6 +213,7 @@
                     document.getElementById('profileName').value = userData.name || '';
                     document.getElementById('profilePhone').value = userData.phone || '';
                     document.getElementById('profileEmail').value = userData.email || '';
+                    loadAppointments(userData.email); // Pass email to load appointments
                 } else {
                     const errorData = await response.json();
                     showError('Failed to load profile: ' + (errorData.detail || 'Unknown error'));
@@ -160,18 +224,97 @@
             }
         }
 
+        // Function to load user appointments
+        async function loadAppointments(userEmail) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/appointments/${encodeURIComponent(userEmail)}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const appointments = await response.json();
+                    const tbody = document.getElementById('appointmentsBody');
+                    tbody.innerHTML = ''; // Clear existing content
+                    if (appointments.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center">No appointments found.</td></tr>';
+                        return;
+                    }
+                    appointments.forEach(async appt => {
+                        // Fetch attendant name
+                        const attendantResponse = await fetch(`${API_BASE_URL}/salon-attendants/${appt.attendant_id}`, {
+                            method: 'GET',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        const attendant = await attendantResponse.json();
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${appt.service}</td>
+                            <td>${appt.appointment_time}</td>
+                            <td>${appt.status}</td>
+                            <td>${attendant.name || 'Unknown'}</td>
+                            <td>${appt.created_at}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    const errorData = await response.json();
+                    showAppointmentsError('Failed to load appointments: ' + (errorData.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+                showAppointmentsError('An error occurred while loading your appointments.');
+            }
+        }
+
+        // Function to load user notifications
+        async function loadNotifications() {
+            const userId = localStorage.getItem('userId');
+            try {
+                const response = await fetch(`${API_BASE_URL}/notifications/${userId}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const notifications = await response.json();
+                    const tbody = document.getElementById('notificationsBody');
+                    tbody.innerHTML = ''; // Clear existing content
+                    if (notifications.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="3" class="text-center">No notifications found.</td></tr>';
+                        return;
+                    }
+                    notifications.forEach(notif => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${notif.message}</td>
+                            <td>${notif.is_read ? 'Read' : 'Unread'}</td>
+                            <td>${notif.created_at}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    const errorData = await response.json();
+                    showNotificationsError('Failed to load notifications: ' + (errorData.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                showNotificationsError('An error occurred while loading your notifications.');
+            }
+        }
+
         // Function to save profile changes
         async function saveProfile(event) {
             event.preventDefault(); // Prevent form submission
-            
+
             const userId = localStorage.getItem('userId');
             const name = document.getElementById('profileName').value;
             const phone = document.getElementById('profilePhone').value;
             const email = document.getElementById('profileEmail').value;
-            
+
             const errorMessage = document.getElementById('errorMessage');
             const successMessage = document.getElementById('successMessage');
-            
+
             // Hide messages
             errorMessage.style.display = 'none';
             successMessage.style.display = 'none';
@@ -189,10 +332,9 @@
                 });
 
                 if (response.ok) {
-                    const result = await response.json();
                     showSuccess('Profile updated successfully!');
-                    // Optionally reload profile to reflect changes
-                    loadProfile();
+                    // Reload appointments with new email
+                    loadAppointments(email);
                 } else {
                     const errorData = await response.json();
                     showError('Failed to update profile: ' + (errorData.detail || 'Unknown error'));
@@ -202,30 +344,36 @@
                 showError('An error occurred while saving your profile.');
             }
         }
-        
+
         function showError(message) {
             const errorMessage = document.getElementById('errorMessage');
             errorMessage.textContent = message;
             errorMessage.style.display = 'block';
-            
-            // Hide success message if visible
-            const successMessage = document.getElementById('successMessage');
-            successMessage.style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
         }
-        
+
         function showSuccess(message) {
             const successMessage = document.getElementById('successMessage');
             successMessage.textContent = message;
             successMessage.style.display = 'block';
-            
-            // Hide error message if visible
-            const errorMessage = document.getElementById('errorMessage');
-            errorMessage.style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function showAppointmentsError(message) {
+            const errorMessage = document.getElementById('appointmentsError');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        function showNotificationsError(message) {
+            const errorMessage = document.getElementById('notificationsError');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
         }
 
         // Setup event listeners
         function setupEventListeners() {
-            document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
+            document.getElementById('profileForm').addEventListener('submit', saveProfile);
         }
     </script>
 </body>
